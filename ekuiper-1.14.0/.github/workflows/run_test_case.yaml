@@ -1,0 +1,108 @@
+name: Run test cases
+
+concurrency:
+  group: test-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+on:
+  push:
+    tags:
+      - "*"
+    branches:
+      - master
+  pull_request:
+    paths-ignore:
+      - "docs/**"
+  release:
+    types:
+      - published
+
+jobs:
+  run_unit_tests:
+    runs-on: ubuntu-latest
+    services:
+      emqx:
+        image: emqx/emqx:4.3.10
+        ports:
+          - 1883:1883
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '1.22'
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    - name: Install dependencies
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        pip3 install pynng==0.7.2 && sudo apt-get update && sudo apt-get install libzmq3-dev -y
+    - name: Build plugins
+      run: |
+        curl -sSf https://raw.githubusercontent.com/WasmEdge/WasmEdge/master/utils/install.sh | bash -s -- -v 0.13.4 > /dev/null
+
+        curl -sSfL -O https://github.com/second-state/wasmedge_rustls_plugin/releases/download/0.1.0/wasmedge_rustls_plugin_ubuntu-22.04.zip
+        unzip wasmedge_rustls_plugin_ubuntu-22.04.zip
+        mv target/release/libwasmedge_rustls.so ~/.wasmedge/plugin/
+
+        mkdir -p plugins/wasm
+        set -e -u -x
+        mkdir -p data
+        mkdir -p log
+        mkdir -p plugins/sinks
+        sed -i -r "s/debug: .*/debug: true/1" etc/kuiper.yaml
+        go build --buildmode=plugin -o plugins/sources/Random@v2.0.0.so extensions/sources/random/random.go
+        cp extensions/sources/random/random.yaml etc/sources/random.yaml
+        go build --buildmode=plugin -o plugins/functions/Echo.so extensions/functions/echo/echo.go
+        go build --buildmode=plugin -o plugins/functions/CountPlusOne@v1.0.0.so extensions/functions/countPlusOne/countPlusOne.go
+        go build --buildmode=plugin -o plugins/functions/AccumulateWordCount@v1.0.0.so extensions/functions/accumulateWordCount/accumulateWordCount.go
+        go build --buildmode=plugin -o data/test/helloworld.so internal/converter/protobuf/test/*.go
+        go build --buildmode=plugin -o data/myFormat.so internal/converter/custom/test/*.go
+        cp test/lookup.json data/lookup.json
+        mkdir -p data/custom
+        cp data/myFormat.so data/custom/myFormat.so
+        mkdir -p data/schema
+        cp data/myFormat.so data/schema/myFormat.so
+        mkdir -p plugins/portable/mirror
+        cd sdk/go/example/mirror
+        go build -o ../../../../plugins/portable/mirror/mirror .
+        cp mirror.json ../../../../plugins/portable/mirror
+        cd ../../../../
+        cp -r sdk/python/example/pysam plugins/portable/pysam
+        cp -r sdk/python/ekuiper plugins/portable/pysam/
+    - name: Run topotest case
+      run: |
+        go test --tags="edgex msgpack script test" --cover -covermode=atomic -coverpkg=github.com/lf-edge/ekuiper/internal/topo -coverprofile=topotest-plugin.xml github.com/lf-edge/ekuiper/internal/topo/topotest/plugin
+    - name: Run test case
+      run: |
+        source $HOME/.wasmedge/env
+        make failpoint-enable
+        go test --tags="edgex msgpack script test" --cover -covermode=atomic -coverpkg=./... -coverprofile=coverage.xml $(go list ./... | grep -v "github.com/lf-edge/ekuiper/internal/topo/topotest/plugin")
+        make failpoint-disable
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v4
+      with:
+        files: coverage.xml,topotest-plugin.xml
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: false
+        verbose: true
+    - name: Run plugins test case
+      run: |
+        mkdir -p data/test/uploads
+        cp extensions/functions/dependencies/tensorflow/models/*  data/test/uploads/
+        export CGO_CFLAGS=-I$(pwd)/extensions/functions/dependencies/tensorflow
+        export CGO_LDFLAGS=-L$(pwd)/extensions/functions/dependencies/tensorflow/amd64
+        export LD_LIBRARY_PATH=$(pwd)/extensions/functions/dependencies/tensorflow/amd64:$LD_LIBRARY_PATH
+        cd extensions
+        go test ./functions/...
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: stream.log
+        path: log/stream.log
+
+  run_fvt_tests:
+    needs:
+      - run_unit_tests
+    uses: ./.github/workflows/run_fvt_tests.yaml
