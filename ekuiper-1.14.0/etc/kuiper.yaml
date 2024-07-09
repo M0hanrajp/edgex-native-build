@@ -17,7 +17,7 @@ basic:
     # The syslog protocol, tcp or udp; Leave empty if no remote syslog server is used
     network: udp
     # The syslog server address; Leave empty if no remote syslog server is used
-    address: 127.0.0.1:514
+    address: localhost:514
     # The syslog level, supports debug, info, warn, error
     level: info
     # The syslog tag; Leave empty if no tag is used
@@ -31,11 +31,11 @@ basic:
   # Maximum log file count
   rotateCount: 3
   # CLI ip
-  ip: 127.0.0.1
+  ip: 0.0.0.0
   # CLI port
   port: 20498
   # REST service ip
-  restIp: 127.0.0.1
+  restIp: 0.0.0.0
   # REST service port
   restPort: 9081
   # The global time zone from the IANA time zone database, or Local if not set.
@@ -107,7 +107,7 @@ sink:
 source:
   ## Configurations for the global http data server for httppush source
   # HTTP data service ip
-  httpServerIp: 127.0.0.1
+  httpServerIp: 0.0.0.0
   # HTTP data service port
   httpServerPort: 10081
   # httpServerTls:
@@ -119,7 +119,7 @@ store:
   type: sqlite
   extStateType: sqlite
   redis:
-    host: 127.0.0.1
+    host: localhost
     port: 6379
     password: kuiper
     #Timeout in ms
