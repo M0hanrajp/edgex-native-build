@@ -87,6 +87,8 @@ start-ekuiper:
 	@cd ekuiper-1.14.0/_build/kuiper--linux-amd64/bin && nohup ./kuiperd > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/ekuiper/nohup.out 2>&1 &
 	@echo "::: EdgeX ekuiper is running... :::"
 	
+# Pid is a variable here which will contain pid of the process running at 9081.
+# The condition will only be entered when pid will not be empty.
 kill-ekuiper:
 	@pid=$$(sudo lsof -t -i :9081); \
 	if [ -n "$$pid" ]; then \
