@@ -11,7 +11,7 @@ Writable:
 Service:
   Port: 59880
   Host: "localhost"
-  StartupMsg: "This is my custom Core Data Microservice"
+  StartupMsg: "Welcome, This is my custom Core Data Microservice"
 
 MessageBus:
   Optional:
