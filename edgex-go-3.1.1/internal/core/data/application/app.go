@@ -39,6 +39,10 @@ type CoreDataApp struct {
 	readingsPersistedCounter gometrics.Counter
 }
 
+// CoreDataAppName contains the name of data's application.CoreDataApp{} instance in the DIC.
+// For my custom configuration this was changed
+var CoreDataAppName = di.TypeInstanceToName(CoreDataApp{})
+
 // NewCoreDataApp create a new initialized Core Data application
 func NewCoreDataApp(dic *di.Container) *CoreDataApp {
 	app := &CoreDataApp{
@@ -63,11 +67,12 @@ func NewCoreDataApp(dic *di.Container) *CoreDataApp {
 	}
 	app.lc.Infof("Registered metrics counter %s", readingsPersistedMetricName)
 
+	// Print the value of CoreDataAppName that was acquired at line 44
+	app.lc.Infof("Custom printing my variable value:")
+	app.lc.Infof("CoreDataAppName: %s", CoreDataAppName)
+
 	return app
 }
-
-// CoreDataAppName contains the name of data's application.CoreDataApp{} instance in the DIC.
-var CoreDataAppName = di.TypeInstanceToName(CoreDataApp{})
 
 // CoreDataAppFrom helper function queries the DIC and returns the application.CoreDataApp instance.
 func CoreDataAppFrom(get di.Get) *CoreDataApp {
