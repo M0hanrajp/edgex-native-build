@@ -89,6 +89,17 @@ start-ekuiper:
 	
 # Pid is a variable here which will contain pid of the process running at 9081.
 # The condition will only be entered when pid will not be empty.
+#     1. **`@pid=`**:
+#    - This part assigns the output of the following command to the variable `pid`.
+#
+#    2. **`$$(sudo lsof -t -i :9081)`**:
+#    - `$$`: In a `Makefile`, `$$` is used to escape the dollar sign, so it gets passed to the shell as a single `$`.
+#    - `sudo`: Runs the command with superuser privileges.
+#    - `lsof`: Stands for "list open files". It's a command used to find out which files are open by which processes.
+#    - `-t`: This option tells `lsof` to output only the process IDs (PIDs) of the processes using the specified files.
+#    - `-i :9081`: This option tells `lsof` to look for processes using the network port 9081.
+#    So, the command `sudo lsof -t -i :9081` lists the PIDs of processes using port 9081. The `$$` ensures that the output
+#    of this command is assigned to the `pid` variable in the `Makefile`.
 kill-ekuiper:
 	@pid=$$(sudo lsof -t -i :9081); \
 	if [ -n "$$pid" ]; then \
