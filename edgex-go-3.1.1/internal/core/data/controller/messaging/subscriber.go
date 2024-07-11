@@ -34,13 +34,19 @@ func SubscribeEvents(ctx context.Context, dic *di.Container) errors.EdgeX {
 	lc := container.LoggingClientFrom(dic.Get)
 
 	messageBus := container.MessagingClientFrom(dic.Get)
+	// Added this variable to check messageBus value
+	lc.Infof("MessageBus: %+v", messageBus)
 
 	messages := make(chan types.MessageEnvelope)
 	messageErrors := make(chan error)
 
 	app := application.CoreDataAppFrom(dic.Get)
+	// Added this variable to check app value
+	lc.Infof("CoreDataApp: %+v", app)
 
 	subscribeTopic := common.BuildTopic(messageBusInfo.GetBaseTopicPrefix(), common.CoreDataEventSubscribeTopic)
+	// Added this variable to check subscribeTopic value
+	lc.Infof("SubscribeTopic: %s", subscribeTopic)
 
 	topics := []types.TopicChannel{
 		{
