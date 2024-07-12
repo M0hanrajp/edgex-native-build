@@ -1,0 +1,2 @@
+time="2024-07-09T01:12:51+05:30" level=info msg="set server total memory 3995111424 success" file="memory/mem.go:40"
+Serving kuiper (version - ) on port 20498, and restful api on http://0.0.0.0:9081.

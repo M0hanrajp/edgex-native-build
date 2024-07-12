@@ -1,0 +1,178 @@
+==> Starting Consul agent...
+               Version: '1.19.0'
+            Build Date: '2024-06-12 13:59:10 +0000 UTC'
+               Node ID: 'bf15faa9-808c-e1f8-ad6b-206f4583cb8c'
+             Node name: 'LIN-MP22QN1X'
+            Datacenter: 'dc1' (Segment: '<all>')
+                Server: true (Bootstrap: true)
+           Client Addr: [127.0.0.1] (HTTP: 8500, HTTPS: -1, gRPC: -1, gRPC-TLS: 8503, DNS: 8600)
+          Cluster Addr: 127.0.0.1 (LAN: 8301, WAN: 8302)
+     Gossip Encryption: false
+      Auto-Encrypt-TLS: false
+           ACL Enabled: false
+     Reporting Enabled: false
+    ACL Default Policy: allow
+             HTTPS TLS: Verify Incoming: false, Verify Outgoing: false, Min Version: TLSv1_2
+              gRPC TLS: Verify Incoming: false, Min Version: TLSv1_2
+      Internal RPC TLS: Verify Incoming: false, Verify Outgoing: false (Verify Hostname: false), Min Version: TLSv1_2
+
+==> Log data will now stream in as it occurs:
+
+2024-07-11T10:57:29.761+0530 [WARN]  agent: bootstrap = true: do not enable unless necessary
+2024-07-11T10:57:29.772+0530 [WARN]  agent.auto_config: bootstrap = true: do not enable unless necessary
+2024-07-11T10:57:29.921+0530 [INFO]  agent.server.raft: initial configuration: index=141 servers="[{Suffrage:Voter ID:bf15faa9-808c-e1f8-ad6b-206f4583cb8c Address:127.0.0.1:8300}]"
+2024-07-11T10:57:29.921+0530 [INFO]  agent.server.raft: entering follower state: follower="Node at 127.0.0.1:8300 [Follower]" leader-address= leader-id=
+2024-07-11T10:57:29.923+0530 [INFO]  agent.server.serf.wan: serf: EventMemberJoin: LIN-MP22QN1X.dc1 127.0.0.1
+2024-07-11T10:57:29.923+0530 [WARN]  agent.server.serf.wan: serf: Failed to re-join any previously known node
+2024-07-11T10:57:29.924+0530 [INFO]  agent.server.serf.lan: serf: EventMemberJoin: LIN-MP22QN1X 127.0.0.1
+2024-07-11T10:57:29.924+0530 [INFO]  agent.router: Initializing LAN area manager
+2024-07-11T10:57:29.924+0530 [WARN]  agent.server.serf.lan: serf: Failed to re-join any previously known node
+2024-07-11T10:57:29.925+0530 [INFO]  agent.server: Handled event for server in area: event=member-join server=LIN-MP22QN1X.dc1 area=wan
+2024-07-11T10:57:29.925+0530 [INFO]  agent.server: Adding LAN server: server="LIN-MP22QN1X (Addr: tcp/127.0.0.1:8300) (DC: dc1)"
+2024-07-11T10:57:29.925+0530 [INFO]  agent.server.autopilot: reconciliation now disabled
+2024-07-11T10:57:29.930+0530 [INFO]  agent.server.cert-manager: initialized server certificate management
+2024-07-11T10:57:29.932+0530 [INFO]  agent: Started DNS server: address=127.0.0.1:8600 network=tcp
+2024-07-11T10:57:29.933+0530 [INFO]  agent: Started DNS server: address=127.0.0.1:8600 network=udp
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/destinations
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/computedexplicitdestinations
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/computedfailoverpolicy
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/multicluster/v2/computedexportedservices
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/demo/v1/concept
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/grpcroute
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/meshgateway
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/tenancy/v2beta1/namespace
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/hcp/v2/telemetrystate
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/demo/v1/artist
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/demo/v2/artist
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/httproute
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/node
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/demo/v1/executive
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/tcproute
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/auth/v2beta1/trafficpermissions
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/auth/v2beta1/partitiontrafficpermissions
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/hcp/v2/link
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/serviceendpoints
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/auth/v2beta1/workloadidentity
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/auth/v2beta1/namespacetrafficpermissions
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/demo/v1/album
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/demo/v2/album
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/proxyconfiguration
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/destinationpolicy
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/meshconfiguration
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/internal/v1/tombstone
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/computedroutes
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/service
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/healthstatus
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/multicluster/v2/exportedservices
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/multicluster/v2/namespaceexportedservices
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/multicluster/v2/partitionexportedservices
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/demo/v1/recordlabel
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/computedproxyconfiguration
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/proxystatetemplate
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/apigateway
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/auth/v2beta1/computedtrafficpermissions
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/mesh/v2beta1/computedimplicitdestinations
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/workload
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/failoverpolicy
+2024-07-11T10:57:29.933+0530 [INFO]  agent.http: Registered resource endpoint: endpoint=/api/catalog/v2beta1/nodehealthstatus
+2024-07-11T10:57:29.933+0530 [INFO]  agent: Starting server: address=127.0.0.1:8500 network=tcp protocol=http
+2024-07-11T10:57:29.934+0530 [INFO]  agent: Started gRPC listeners: port_name=grpc_tls address=127.0.0.1:8503 network=tcp
+2024-07-11T10:57:29.934+0530 [INFO]  agent: started state syncer
+2024-07-11T10:57:29.934+0530 [INFO]  agent: Consul agent running!
+2024-07-11T10:57:36.549+0530 [WARN]  agent.server.raft: heartbeat timeout reached, starting election: last-leader-addr= last-leader-id=
+2024-07-11T10:57:36.549+0530 [INFO]  agent.server.raft: entering candidate state: node="Node at 127.0.0.1:8300 [Candidate]" term=43
+2024-07-11T10:57:36.557+0530 [INFO]  agent.server.raft: election won: term=43 tally=1
+2024-07-11T10:57:36.557+0530 [INFO]  agent.server.raft: entering leader state: leader="Node at 127.0.0.1:8300 [Leader]"
+2024-07-11T10:57:36.558+0530 [INFO]  agent.server: cluster leadership acquired
+2024-07-11T10:57:36.558+0530 [INFO]  agent.server: New leader elected: payload=LIN-MP22QN1X
+2024-07-11T10:57:36.657+0530 [INFO]  agent.server.autopilot: reconciliation now enabled
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="federation state anti-entropy"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="federation state pruning"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="streaming peering resources"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="metrics for streaming peering resources"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="peering deferred deletion"
+2024-07-11T10:57:36.658+0530 [INFO]  connect.ca: initialized primary datacenter CA from existing CARoot with provider: provider=consul
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="intermediate cert renew watch"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="CA root pruning"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="CA root expiration metric"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="CA signing expiration metric"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="virtual IP version check"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: started routine: routine="config entry controllers"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: stopping routine: routine="virtual IP version check"
+2024-07-11T10:57:36.658+0530 [INFO]  agent.leader: stopped routine: routine="virtual IP version check"
+2024-07-11T10:57:41.835+0530 [INFO]  agent: Synced node info
+2024-07-11T10:58:03.055+0530 [INFO]  agent: Synced service: service=core-metadata
+2024-07-11T10:58:03.067+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T10:58:12.742+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T10:58:24.035+0530 [INFO]  agent: Synced service: service=core-data
+2024-07-11T10:58:24.039+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T10:58:26.387+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:02:28.949+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:04:04.600+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T11:09:36.887+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T11:09:41.782+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:13:48.739+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T11:14:25.531+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:17:05.217+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T11:18:26.118+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:21:25.924+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T11:22:39.451+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:26:39.207+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:28:33.380+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T11:30:23.855+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:33:16.282+0530 [INFO]  agent: Synced check: check=core-metadata
+2024-07-11T11:37:19.989+0530 [INFO]  agent: Synced check: check=core-data
+2024-07-11T11:40:00.235+0530 [INFO]  agent: Deregistered service: service=core-data
+2024-07-11T11:40:13.075+0530 [INFO]  agent: Deregistered service: service=core-metadata
+2024-07-11T11:40:24.656+0530 [INFO]  agent: Caught: signal=terminated
+2024-07-11T11:40:24.656+0530 [INFO]  agent: Graceful shutdown disabled. Exiting
+2024-07-11T11:40:24.657+0530 [INFO]  agent: Requesting shutdown
+2024-07-11T11:40:24.688+0530 [INFO]  agent.server: shutting down server
+2024-07-11T11:40:24.690+0530 [INFO]  agent.leader: stopping routine: routine="peering deferred deletion"
+2024-07-11T11:40:24.691+0530 [INFO]  agent.leader: stopping routine: routine="intermediate cert renew watch"
+2024-07-11T11:40:24.691+0530 [INFO]  agent.leader: stopping routine: routine="CA root pruning"
+2024-07-11T11:40:24.691+0530 [INFO]  agent.leader: stopping routine: routine="federation state anti-entropy"
+2024-07-11T11:40:24.691+0530 [INFO]  agent.leader: stopping routine: routine="federation state pruning"
+2024-07-11T11:40:24.691+0530 [INFO]  agent.leader: stopping routine: routine="streaming peering resources"
+2024-07-11T11:40:24.691+0530 [ERROR] agent.server: error performing anti-entropy sync of federation state: error="context canceled"
+2024-07-11T11:40:24.692+0530 [INFO]  agent.leader: stopped routine: routine="federation state anti-entropy"
+2024-07-11T11:40:24.691+0530 [INFO]  agent.leader: stopping routine: routine="metrics for streaming peering resources"
+2024-07-11T11:40:24.693+0530 [INFO]  agent.leader: stopping routine: routine="CA root expiration metric"
+2024-07-11T11:40:24.693+0530 [INFO]  agent.leader: stopping routine: routine="CA signing expiration metric"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopping routine: routine="config entry controllers"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopped routine: routine="federation state pruning"
+2024-07-11T11:40:24.693+0530 [WARN]  agent.server.controller-runtime: error received from watch: controller=consul.io/exported-services-v1-compat managed_type=multicluster.v2.ComputedExportedServices error="rpc error: code = Canceled desc = context canceled"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopped routine: routine="CA root pruning"
+2024-07-11T11:40:24.690+0530 [WARN]  agent.server.api_gateway_controller: error watching controller subscription: controller=apiGatewayController topic=InlineCertificate err="subscription closed by server, server is shutting down"
+2024-07-11T11:40:24.690+0530 [WARN]  agent.server.api_gateway_controller: error watching controller subscription: controller=apiGatewayController topic=TCPRoute err="subscription closed by server, server is shutting down"
+2024-07-11T11:40:24.691+0530 [WARN]  agent.server.api_gateway_controller: error watching controller subscription: controller=apiGatewayController topic=APIGateway err="subscription closed by server, server is shutting down"
+2024-07-11T11:40:24.691+0530 [WARN]  agent.server.api_gateway_controller: error watching controller subscription: controller=apiGatewayController topic=BoundAPIGateway err="subscription closed by server, server is shutting down"
+2024-07-11T11:40:24.691+0530 [WARN]  agent.server.api_gateway_controller: error watching controller subscription: controller=apiGatewayController topic=HTTPRoute err="subscription closed by server, server is shutting down"
+2024-07-11T11:40:24.693+0530 [WARN]  agent.server.controller-runtime: error received from watch: controller=consul.io/exported-services-v1-compat managed_type=multicluster.v2.ComputedExportedServices error="rpc error: code = Canceled desc = context canceled"
+2024-07-11T11:40:24.693+0530 [INFO]  agent.leader: stopped routine: routine="streaming peering resources"
+2024-07-11T11:40:24.693+0530 [WARN]  agent.server.controller-runtime: error received from watch: controller=consul.io/reaper-controller managed_type=internal.v1.Tombstone error="rpc error: code = Canceled desc = context canceled"
+2024-07-11T11:40:24.693+0530 [WARN]  agent.server.controller-runtime: error received from watch: controller=consul.io/exported-services-v1-compat managed_type=multicluster.v2.ComputedExportedServices error="rpc error: code = Canceled desc = context canceled"
+2024-07-11T11:40:24.693+0530 [INFO]  agent.server.peering_metrics: stopping peering metrics
+2024-07-11T11:40:24.697+0530 [INFO]  agent.leader: stopped routine: routine="metrics for streaming peering resources"
+2024-07-11T11:40:24.690+0530 [WARN]  agent.server.api_gateway_controller: error watching controller subscription: controller=apiGatewayController topic=JWTProvider err="subscription closed by server, server is shutting down"
+2024-07-11T11:40:24.690+0530 [WARN]  agent.server.v2_exports_shim: encountered an error while streaming exported services: error="subscription closed by server, server is shutting down"
+2024-07-11T11:40:24.694+0530 [WARN]  agent.server.controller-runtime: error received from watch: controller=consul.io/exported-services-v1-compat managed_type=multicluster.v2.ComputedExportedServices error="rpc error: code = Canceled desc = context canceled"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopped routine: routine="CA root expiration metric"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopped routine: routine="CA signing expiration metric"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopped routine: routine="config entry controllers"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopped routine: routine="intermediate cert renew watch"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopping routine: routine="peering deferred deletion"
+2024-07-11T11:40:24.694+0530 [INFO]  agent.leader: stopped routine: routine="peering deferred deletion"
+2024-07-11T11:40:24.695+0530 [WARN]  agent.server.serf.lan: serf: Shutdown without a Leave
+2024-07-11T11:40:24.699+0530 [INFO]  agent.server.autopilot: reconciliation now disabled
+2024-07-11T11:40:24.704+0530 [WARN]  agent.server.serf.wan: serf: Shutdown without a Leave
+2024-07-11T11:40:24.705+0530 [INFO]  agent.router.manager: shutting down
+2024-07-11T11:40:24.706+0530 [INFO]  agent.router.manager: shutting down
+2024-07-11T11:40:24.711+0530 [INFO]  agent: consul server down
+2024-07-11T11:40:24.712+0530 [INFO]  agent: shutdown complete
+2024-07-11T11:40:24.713+0530 [INFO]  agent.dns: Stopping server: protocol=DNS address=127.0.0.1:8600 network=tcp
+2024-07-11T11:40:24.714+0530 [INFO]  agent.dns: Stopping server: protocol=DNS address=127.0.0.1:8600 network=udp
+2024-07-11T11:40:24.716+0530 [INFO]  agent: Stopping server: address=127.0.0.1:8500 network=tcp protocol=http
+2024-07-11T11:40:24.717+0530 [INFO]  agent: Waiting for endpoints to shut down
+2024-07-11T11:40:24.717+0530 [INFO]  agent: Endpoints down
+2024-07-11T11:40:24.717+0530 [INFO]  agent: Exit code: code=1

@@ -1,0 +1,6 @@
+level=INFO ts=2024-07-11T05:27:52.759971102Z app=core-common-config-bootstrapper source=main.go:63 msg="Core Common Config is starting"
+level=INFO ts=2024-07-11T05:27:52.760191557Z app=core-common-config-bootstrapper source=main.go:75 msg="Secret Provider created"
+level=INFO ts=2024-07-11T05:27:52.760224016Z app=core-common-config-bootstrapper source=main.go:84 msg="Got Config Provider Access Token with length 0"
+level=INFO ts=2024-07-11T05:27:52.760236825Z app=core-common-config-bootstrapper source=config.go:718 msg="Using Configuration provider (consul) from: http://127.0.0.1:8500 with base path of edgex/v3/core-common-config-bootstrapper"
+level=INFO ts=2024-07-11T05:27:52.765449975Z app=core-common-config-bootstrapper source=main.go:131 msg="Skipped pushing common configuration. It already exists and overwrite flag not set"
+level=INFO ts=2024-07-11T05:27:52.765483668Z app=core-common-config-bootstrapper source=main.go:134 msg="Core Common Config exiting"
