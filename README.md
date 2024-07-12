@@ -14,7 +14,21 @@ This Makefile provides a set of commands to manage various EdgeX Foundry service
 
 ### Prerequisites
 
-- Make sure the host machine as all mentioned [Required software](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#required-software) & [Prepare your environment](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#prepare-your-environment) 
+- Make sure the host machine as all [Required software](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#required-software) & [Prepare your environment](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#prepare-your-environment) environment variables are set.
+
+### Directory Path
+
+The directory path `~/edgex-foundry/edgex-native-build-3.1-napa` used in the Makefile will depend on where you clone this repository. You may need to update the Makefile to reflect your chosen directory.
+
+For the Consul agent:
+
+```makefile
+# consul agent
+start-consul-agent:
+        @nohup consul agent -ui -bootstrap -server -client 127.0.0.1 -bind 127.0.0.1 -advertise 127.0.0.1 -data-dir=tmp/consul > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-consul-agent/nohup.out 2>&1 &
+        @echo "::: EdgeX consul-agent is running... :::"
+```
+Make sure to update the paths in the Makefile according to your directory structure.
 
 ### Usage
 
