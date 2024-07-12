@@ -14,8 +14,7 @@ This Makefile provides a set of commands to manage various EdgeX Foundry service
 
 ### Prerequisites
 
-- Ensure you have all the necessary EdgeX Foundry components installed.
-- Make sure you have `consul` and other EdgeX services available in the specified directories.
+- Make sure the host machine as all mentioned [Required software](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#required-software) & [Prepare your environment](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#prepare-your-environment) 
 
 ### Usage
 
