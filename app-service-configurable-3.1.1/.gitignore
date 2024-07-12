@@ -1,0 +1,11 @@
+test.txt
+go.mod.bk
+debug
+*.exe
+app-service-configurable
+.vscode
+coverage.out
+logs/
+.idea
+VERSION
+
