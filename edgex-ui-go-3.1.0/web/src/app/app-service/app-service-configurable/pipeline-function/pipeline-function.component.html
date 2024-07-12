@@ -1,0 +1,163 @@
+<!--
+*******************************************************************************
+ * Copyright © 2021-2022 VMware, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ * @author: Huaqiao Zhang, <huaqiaoz@vmware.com>
+ *******************************************************************************
+ -->
+
+<div class="row">
+    <div class="col-sm-4 col-md-3">
+        <div appDragHighlight class="card mb-3" (drop)="ondropBuiltinFunction($event)">
+            <div class="card-header font-weight-bold text-nowrap text-truncate">
+                <i class="fa fa-file-text mr-2 text-info"></i>
+                <span i18n>Builtin Pipeline Functions</span>
+            </div>
+            <div class="card-body overflow-auto">
+                <table *ngIf="selectedFunctionsName.length === objectKeys(availableFunctions).length" class="border-secondary rounded w-100 text-center" style="height: 70px; border: 1px; border-style: dashed;">
+                    <tbody>
+                        <td class="text-muted" i18n>Drop Zone</td>
+                    </tbody>
+                </table>
+                <!-- p and div tag is not supported by safari, there is no drag effective -->
+                <span draggable="true" id="{{builtinFuncZoneIdentifier}}{{funcName}}" class="mb-3" [class.d-table]="!isSelected(funcName)" [class.d-none]="isSelected(funcName)"  role="button" *ngFor="let funcName of objectKeys(availableFunctions)" (dragstart)="ondragstartBuiltinFunction($event,funcName)">
+                    <span class="badge badge-secondary">{{funcName}}</span>
+                </span>
+            </div>
+        </div>
+    </div>
+   
+    <div class="col-sm-8 col-md-9">
+        <div class="card">
+            <div class="card-header font-weight-bold">
+                <i class="fa fa-file-text mr-2 text-info"></i>
+                <span i18n>Selected Pipeline Functions</span>
+            </div>
+            <div class="card-body">
+                <div appDragHighlight class="card mb-3" (drop)="ondropFuncExecutionOrder($event)">
+                    <div class="card-header font-weight-bold text-nowrap text-truncate">
+                        <i class="fa fa-sort-amount-asc fa-rotate-270 mr-2 text-info"></i>
+                        <span i18n>Func Execution Order</span>
+                        <span class="text-info ml-2">
+                            <small>
+                                <i class="fa fa-info-circle mr-1"></i>
+                                <span i18n>drag sorting is enabled</span>
+                            </small>
+                        </span>
+                    </div>
+                    <div class="card-body" id="funcExecOrderSelectedBody">
+                        <table *ngIf="selectedFunctionsName.length === 0" class="border-secondary rounded w-100 text-center" style="height: 70px; border: 1px; border-style: dashed;">
+                            <tbody>
+                                <td class="text-muted" i18n>Drop Zone</td>
+                            </tbody>
+                        </table>
+                        <span *ngFor="let funcName of selectedFunctionsName">
+                            <span draggable="true" role="button" id="{{funcExecOrderZoneIdentifier}}{{funcName}}" class="badge badge-secondary text-nowrap text-truncate mr-2" (dragstart)="ondragstartFuncExecutionOrder($event,funcName)">{{funcName}}</span>
+                        </span>
+                    </div>
+                </div>
+               
+                <div *ngIf="selectedFunctionsName.length !== 0 " class="card">
+                    <div class="card-header font-weight-bold">
+                        <i class="fa fa-cog mr-2 text-info"></i>
+                        <span i18n>Pipeline Functions Parameter Setting</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="card mb-3" *ngFor="let funcName of selectedFunctionsName">
+                            <div class="card-header text-nowrap text-truncate">
+                                <i class="fa fa-tag mr-2 text-info"></i>
+                                <span class="mr-2">Function</span>
+                                <span class="badge badge-secondary mr-2">{{funcName}}</span>
+                                <span>Parameters</span>
+                                <span role="button" class="float-right text-danger" (click)="unselectFunc(funcName)">
+                                    <i class="fa fa-trash"></i>
+                                </span>
+                            </div>
+                            <div class="card-body text-nowrap">
+                                
+                                <div [ngSwitch]="startWith(funcName)">
+                                    <div *ngSwitchCase="'AddTags'">
+                                        <app-appsvc-function-add-tags 
+                                        [(addTags)]="availableFunctions[funcName]"></app-appsvc-function-add-tags>
+                                    </div>
+                                    <div *ngSwitchCase="'Batch'">
+                                        <app-appsvc-function-batch 
+                                        [(batch)]="availableFunctions[funcName]"></app-appsvc-function-batch>
+                                    </div>
+                                    <div *ngSwitchCase="'Compress'">
+                                        <app-appsvc-function-compress 
+                                        [(compress)]="availableFunctions[funcName]"></app-appsvc-function-compress>
+                                    </div>
+                                    <div *ngSwitchCase="'Encrypt'">
+                                        <app-appsvc-function-encrypt 
+                                        [(encrypt)]="availableFunctions[funcName]"></app-appsvc-function-encrypt>
+                                    </div>
+                                    <div *ngSwitchCase="'FilterByDeviceName'">
+                                        <app-appsvc-function-filter-by-device-name 
+                                        [(filterByDeviceName)]="availableFunctions[funcName]"></app-appsvc-function-filter-by-device-name>
+                                    </div>
+                                    <div *ngSwitchCase="'FilterByProfileName'">
+                                        <app-appsvc-function-filter-by-profile-name 
+                                        [(filterByProfileName)]="availableFunctions[funcName]"></app-appsvc-function-filter-by-profile-name>
+                                    </div>
+                                    <div *ngSwitchCase="'FilterByResourceName'">
+                                        <app-appsvc-function-filter-by-resource-name 
+                                        [(filterByResourceName)]="availableFunctions[funcName]"></app-appsvc-function-filter-by-resource-name>
+                                    </div>
+                                    <div *ngSwitchCase="'FilterBySourceName'">
+                                        <app-appsvc-function-filter-by-source-name 
+                                        [(filterBySourceName)]="availableFunctions[funcName]"></app-appsvc-function-filter-by-source-name>
+                                    </div>
+                                    <div *ngSwitchCase="'Transform'">
+                                        <app-appsvc-function-transform 
+                                        [(transform)]="availableFunctions[funcName]"></app-appsvc-function-transform>
+                                    </div>
+                                    <div *ngSwitchCase="'HTTPExport'">
+                                        <app-appsvc-function-httpexport 
+                                        [(httpExport)]="availableFunctions[funcName]"></app-appsvc-function-httpexport>
+                                    </div>
+                                    <div *ngSwitchCase="'MQTTExport'">
+                                        <app-appsvc-function-mqttexport 
+                                        [(mqttExport)]="availableFunctions[funcName]"></app-appsvc-function-mqttexport>
+                                    </div>
+                                    <div *ngSwitchCase="'JSONLogic'">
+                                        <app-appsvc-function-jsonlogic 
+                                        [(jsonLogic)]="availableFunctions[funcName]"></app-appsvc-function-jsonlogic>
+                                    </div>
+                                    <div *ngSwitchCase="'PushToCore'">
+                                        <app-appsvc-function-push-to-core 
+                                        [(pushToCore)]="availableFunctions[funcName]"></app-appsvc-function-push-to-core>
+                                    </div>
+                                    <div *ngSwitchCase="'SetResponseData'">
+                                        <app-appsvc-function-set-response-data 
+                                        [(setResponseData)]="availableFunctions[funcName]"></app-appsvc-function-set-response-data>
+                                    </div>
+                                    <div *ngSwitchDefault>
+                                        <div class="alert alert-warning mb-3" role="alert">
+                                            <small>
+                                                <i class="fa fa-info-circle mr-1"></i>
+                                                <span i18n>
+                                                    Unknown pipeline function
+                                                </span>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

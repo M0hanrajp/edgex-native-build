@@ -1,0 +1,228 @@
+<!--
+*******************************************************************************
+ * Copyright © 2021-2022 VMware, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ * @author: Huaqiao Zhang, <huaqiaoz@vmware.com>
+ *******************************************************************************
+ -->
+
+<div class="card">
+    <div class="card-header font-weight-bold">
+        <i class="fa fa-list text-danger mr-2"></i> 
+        <span *ngIf="associatedSvcName !== ''"> 
+            <span class="mr-1" i18n>DeviceService</span>
+            <span class="text-danger mr-1">{{associatedSvcName}}</span> 
+            <span i18n>Associated Device List</span>
+        </span>
+        <span *ngIf="associatedProfileName !== ''"> 
+            <span class="mr-1" i18n>DeviceProfile</span>
+            <span class="text-danger mr-1">{{associatedProfileName}}</span>
+            <span i18n>Associated Device List</span>
+        </span>
+        <span  *ngIf="associatedProfileName === '' && associatedSvcName === ''" i18n>Device List</span>
+    </div>
+    <div class="card-body p-0 position-relative">
+        <div class="bg-light px-2 py-2">
+            <div class="btn-group btn-group-sm" role="group">
+                <button class="btn btn-primary" data-testid="device-list-refresh-btn" (click)="refresh()">
+                    <span>
+                        <i class="fa fa-refresh mr-1"></i>
+                        <span i18n>Refresh</span>
+                    </span> 
+                </button>
+                <button type="button" class="btn btn-info"  routerLink="../add-device">
+                    <span>
+                        <i class="fa fa-plus mr-1"></i>
+                        <span i18n>Add</span> 
+                    </span>
+                </button>
+                <button type="button" class="btn btn-success" (click)="edit()" [disabled]="selectedDevice.length !== 1">
+                    <span>
+                        <i class="fa fa-edit mr-1"></i>
+                        <span i18n>Edit</span> 
+                    </span>
+                </button>
+                <button type="button" class="btn btn-danger" (click)="deleteConfirm()" [disabled]="selectedDevice.length === 0">
+                    <span>
+                        <i class="fa fa-trash mr-1"></i>
+                        <span i18n>Delete</span>
+                    </span>
+                </button>
+              </div>
+        </div>
+        <div class="table-responsive ">
+            <table class="table table-hover text-truncate ">
+                <thead class="thead-light">
+                    <tr>
+                      <th scope="col"><input type="checkbox" role="button" [checked]="isCheckedAll()" (click)="selectAll($event)"></th>
+                      <th scope="col" i18n>ID</th>
+                      <th scope="col" i18n>Name</th>
+                      <th scope="col" i18n>Description</th>
+                      <th scope="col" i18n>Labels</th>
+                      <th scope="col" i18n>AdminState</th>
+                      <th scope="col" i18n>OperatingState</th>
+                      <th scope="col" i18n>Command</th>
+                      <th scope="col" i18n>AutoEvents</th>
+                      <th scope="col" i18n>AssociatedProfile</th>
+                      <th scope="col" i18n>AssociatedService</th>
+                      
+                      <!-- <th scope="col">Created</th>
+                      <th scope="col">Modified</th> -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let device of deviceList" [class.table-active]="isChecked(device.id) || specialFeatureAssociatedDeviceName === device.name">
+                        <td> <input type="checkbox" role="button"  [checked]="isChecked(device.id)" (click)="selectOne($event,device)"></td>
+                        <td class="user-select-all">{{device.id}}</td>
+                        <td class="user-select-all">{{device.name}}</td>
+                        <td>{{device.description}}</td>
+                        <td>{{device.labels}}</td>
+                        <td>
+                            <span [ngSwitch]="device.adminState">
+                                <span *ngSwitchCase="'UNLOCKED'" class="badge badge-success">{{device.adminState}}</span> 
+                                <span *ngSwitchDefault class="badge badge-danger">{{device.adminState}}</span> 
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span [ngSwitch]="device.operatingState">
+                                <span *ngSwitchCase="'UP'" class="badge badge-success"> {{device.operatingState}}</span> 
+                                <span *ngSwitchCase="'DOWN'" class="badge badge-danger"> {{device.operatingState}}</span> 
+                                <span *ngSwitchDefault class="badge badge-danger"> {{device.operatingState}}</span> 
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-primary text-light" [class.badge-danger]="specialFeatureName === FEATURE_COMMAND && specialFeatureAssociatedDeviceName === device.name"  role="button" (click)="setSpecialFeatureViewer(device,FEATURE_COMMAND)">
+                                <i class="fa fa-terminal font-weight-bolder"></i>
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            <span class="badge badge-primary text-light" [class.badge-danger]="specialFeatureName === FEATURE_AUTOEVENT && specialFeatureAssociatedDeviceName === device.name" role="button" (click)="setSpecialFeatureViewer(device,FEATURE_AUTOEVENT)">
+                                <i class="fa fa-calendar-check-o font-weight-bolder"></i>
+                            </span>
+                        </td>
+                        <td>
+                            <a routerLink="../../device-profile-center" [queryParams]="{'profileName':device.profileName}">{{device.profileName}}</a>
+                        </td>
+                        <td>
+                            <a routerLink="../../device-service-list">{{device.serviceName}}</a> 
+                        </td>
+                       
+                        <!-- <td>{{device.created | date:'yyyy-MM-dd hh:mm:ss'}}</td>
+                        <td>{{device.modified | date:'yyyy-MM-dd hh:mm:ss' }}</td> -->
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer text-muted p-1">
+        <nav aria-label="navigation">
+            <ul class="pagination justify-content-end m-0">
+                <li class="page-item mr-2 mt-1">
+                    <span class="align-middle" i18n>items per page</span>
+                </li>
+                <li class="page-item mr-2 ">
+                    <select class="custom-select" name="pageLimit" id="pageLimit" [(ngModel)]="pageLimit" (ngModelChange)="onPageSelected()">
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="20">20</option>
+                    </select>
+                </li>
+                <li class="page-item mr-1">
+                    <button class="page-link btn" (click)="prePage()" [disabled]="pagination === 1">
+                        <i class="fa fa-angle-double-left mr-1"></i>
+                        <span i18n>Previous</span>  
+                    </button>
+                </li>
+                <li class="page-item" >
+                    <button class="page-link btn" (click)="nextPage()" [disabled]="this.pageLimit > deviceList.length">
+                        <span i18n>Next</span>
+                        <i class="fa fa-angle-double-right ml-1"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<div *ngIf="specialFeatureName === FEATURE_AUTOEVENT">
+    <div *ngIf="autoEvents; else noAutoEvents">
+        <div class="card mt-3">
+            <div class="card-header">
+                <span class="badge badge-danger text-light">
+                    <i class="fa fa-calendar-check-o font-weight-bolder"></i>
+                </span>
+                <span class="text-primary mx-2 font-weight-bold"> {{specialFeatureAssociatedDeviceName}}</span><span i18n>Associated AutoEvents</span> 
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover text-truncate">
+                        <thead class="thead-light">
+                            <th scope="col" i18n>Resource</th>
+                            <th scope="col" i18n>Interval</th>
+                            <th scope="col" i18n>Onchange</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let event of autoEvents">
+                                <td>{{event.sourceName}}</td>
+                                <td><span class="badge badge-secondary badge-pill">{{event.interval}}</span></td>
+                                <td><span class="">{{event.onChange}}</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ng-template #noAutoEvents>
+        <div class="card mt-3">
+            <div class="card-header">
+                <span class="badge badge-danger text-light">
+                    <i class="fa fa-calendar-check-o font-weight-bolder"></i>
+                </span>
+                <span class="text-primary mx-2 font-weight-bold"> {{specialFeatureAssociatedDeviceName}}</span><span i18n>Associated AutoEvents</span>
+            </div>
+            <div class="card-body text-center">
+                <h5 class="text-warning">
+                    <i class="fa fa-warning mr-1"></i> 
+                    <span i18n>no associated AutoEvents</span>
+                </h5>
+            </div>
+        </div>
+    </ng-template>
+</div>
+
+<div *ngIf="specialFeatureName === FEATURE_COMMAND">
+    <app-device-command-viewer [deviceName]="specialFeatureAssociatedDeviceName"></app-device-command-viewer>
+</div>
+
+
+
+<div class="modal fade" id="deleteConfirmDialog" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="deleteConfirmDialogLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title text-danger" id="deleteConfirmDialogLabel">
+                    <i class="fa fa-warning mr-1"></i>
+                    <span i18n>Warning</span>
+                </h5>  
+            </div>
+            <div class="modal-body" i18n>
+                The data will be permanently erased!!! Are you sure to execute delete operation？
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" i18n>Cancel</button>
+                <button type="button" class="btn btn-danger" (click)="delete()" i18n>Confirm</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,34 @@
+/* You can add global styles to this file, and also import other style files */
+
+*{
+    font-size:14px;
+}
+
+/* html, body { 
+    width: 100%;
+    height: 100%; 
+}  */
+
+.color-edgex-red {
+    color: #922C48;
+}
+
+.color-edgex-red-2 {
+    color: #E60D49;
+}
+
+.color-edgex-blue {
+    color: #425CC7;
+}
+
+.color-edgex-black {
+    color: #2D2848;
+}
+
+.color-edgex-dark {
+    color: #707070;
+}
+
+.color-edgex-light {
+    color: #DEDDDF;
+}

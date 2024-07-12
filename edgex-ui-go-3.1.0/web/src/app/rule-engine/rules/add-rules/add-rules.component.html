@@ -1,0 +1,131 @@
+<!--
+*******************************************************************************
+ * Copyright © 2022-2023 VMware, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ * @author: Huaqiao Zhang, <huaqiaoz@vmware.com>
+ *******************************************************************************
+ -->
+ <!-- <button class="btn btn-success btn-sm float-right" (click)="submit()">
+    <i class="fa fa-save mr-1"></i> 
+    <span i18n>Submit</span>
+</button>
+ <app-wizard-stepper [stepItems]="stepItems" [(data)]="rule"></app-wizard-stepper> -->
+
+ <!-- <div class="card">
+     <div class="card-header">Add Wizard</div>
+     <div class="card-body py-0">
+        <div class="row">
+            <div class="col-md-3 bg-light pt-2">
+                <ul class="list-group ">
+                    <li class="list-group-item list-group-item-action border-0 bg-transparent">An item</li>
+                    <li class="list-group-item list-group-item-action border-0 ">A second item</li>
+                    <li class="list-group-item list-group-item-action border-0 bg-transparent">A third item</li>
+                    <li class="list-group-item list-group-item-action border-0 bg-transparent">A fourth item</li>
+                    <li class="list-group-item list-group-item-action border-0">And a fifth one</li>
+                </ul>
+            </div>
+            <div class="col-md-9 mt-2">
+                <app-sink-list [(ruleActions)]="ruleActions"></app-sink-list>
+            </div>
+        </div>
+     </div>
+ </div> -->
+
+<div class="card">
+    <div class="card-header">
+        <i class="fa fa-plus mr-1 text-danger"></i>
+        <span class="font-weight-bold" i18n>Add Rule</span>
+        <button class="btn btn-success btn-sm float-right" [disabled]="!validate()" (click)="submit()">
+            <i class="fa fa-save mr-1"></i> 
+            <span i18n>Submit</span>
+        </button>
+    </div>
+   
+    <div class="card-body p-0">
+        <form class="px-5 py-4">
+            <div class="form-group row has-validation">
+                <label for="ruleName" class="col-md-2 col-form-label">
+                    <span class="mr-2" i18n>Name</span> 
+                    <span class="fa fa-question-circle-o fa-lg" role="button" data-html="true" data-animation="true"  data-trigger="focus" data-toggle="popover" title="format tips" 
+                    data-content='The identification of the rule. The rule name cannot be duplicated in the same Kuiper instance.'></span>
+                </label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="ruleName" [class.is-invalid]="!rule.id" [class.is-valid]="rule.id" name="ruleId" [(ngModel)]="rule.id">
+                    <div id="ruleName" class="invalid-feedback">
+                        <small i18n>the rule name can't be empty!</small>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row has-validation">
+                <label for="ruleSql" class="col-md-2 col-form-label">
+                    <span class="mr-2" i18n>RuleSQL</span> 
+                    <span class="fa fa-question-circle-o fa-lg" role="button" data-html="true" data-animation="true"  data-trigger="focus" data-toggle="popover" title="format tips" 
+                    data-content='The sql query to run for the rule.The Table name must be your stream name.For example "SELECT EdgexStream.temperature, EdgexStream.temp FROM EdgexStream where EdgexStream.temperature > EdgexStream.temp ".'></span>
+                </label>
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-header p-2" [class.border]="!sqlEditor.getValue()" [class.border-danger]="!sqlEditor.getValue()"> 
+                            <i class="fa fa-code text-info mr-2 font-weight-bolder"></i>
+                            <span class="font-weight-bold" i18n>SQL Editor</span>
+                            <span *ngIf="!sqlEditor.getValue()" class="text-danger float-right">
+                                <i class="fa fa-warning mr-2"></i>
+                                <span i18n>SQL can't be empty!</span>
+                            </span>
+                        </div>
+                        <div class="card-header bg-secondary py-2">
+                            <span class="text-light">
+                                <i role="button" class="fa fa-indent fa-lg mr-3" data-toggle="tooltip" data-placement="top" title="formatter" (click)="formatSql()"></i>
+                            </span>
+                        </div>
+                        <div class="card-body p-0">
+                            <textarea id="sql-editor" name="sql-editor"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group row has-validation">
+                <label for="ruleActions" class="col-md-2 col-form-label">
+                    <span class="mr-2" i18n>Action</span> 
+                    <span class="fa fa-question-circle-o fa-lg" role="button" data-html="true" data-animation="true"  data-trigger="focus" data-toggle="popover" title="tips" 
+                    data-content='where the sql result data sent to'></span>
+                </label>
+                <div class="col-md-10">
+                    <div class="card">
+                        <div class="card-header" [class.border]="!rule.actions || rule.actions.length === 0" [class.border-danger]="!rule.actions || rule.actions.length === 0">
+                            <i class="fa fa-plus mr-2 text-info"></i>
+                            <span class="font-weight-bold" i18n>Add Action</span>
+                            <span *ngIf="!rule.actions || rule.actions.length === 0" class="text-danger float-right">
+                                <i class="fa fa-warning mr-2"></i>
+                                <span i18n>at least one rule action required!</span>
+                            </span>
+                        </div>
+                        <div class="card-body">
+                           <app-sink-list [(ruleActions)]="rule.actions"></app-sink-list>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- advanced options-->
+            <div class="form-group row has-validation">
+                <label for="ruleSql" class="col-md-2 col-form-label">
+                    <span class="mr-2" i18n>Options</span> 
+                    <span class="fa fa-question-circle-o fa-lg" role="button" data-html="true" data-animation="true"  data-trigger="focus" data-toggle="popover" title="tips" 
+                    data-content='Advanced Options'></span>
+                </label>
+                <div class="col-md-10">
+                    <app-rule-advanced-options [(ruleOptions)]="rule.options"></app-rule-advanced-options>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

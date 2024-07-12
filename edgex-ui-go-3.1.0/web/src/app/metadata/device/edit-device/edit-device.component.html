@@ -1,0 +1,107 @@
+<!--
+*******************************************************************************
+ * Copyright © 2021-2022 VMware, Inc. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ *
+ * @author: Huaqiao Zhang, <huaqiaoz@vmware.com>
+ *******************************************************************************
+ -->
+
+<div *ngIf="device" class="card">
+    <div class="card-header font-weight-bold">
+        <i class="fa fa-edit text-danger fa-lg"></i> 
+        <span class="mx-2" i18n>Edit Device</span>
+        <span class="text-primary">{{device.name}}</span> 
+        <button type="button" class="btn btn-success btn-sm float-right" (click)="save()"  [disabled]="validateBeforeSave()">
+            <span>
+                <i class="fa fa-save mr-1"></i>
+                <span i18n>Save</span> 
+            </span>
+        </button>
+    </div>
+    <div class="card-body">
+        <div class="card mb-3">
+            <div class="card-header font-weight-bold">
+                <i class="fa fa-tags fa-lg text-danger mr-1"></i><span i18n>Device Primary</span>
+            </div>
+            <div class="card-body">
+                <form>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label" i18n>DeviceName</label>
+                        <div class="col-md-10">
+                            <input type="text" name="name" [(ngModel)]="device.name" [class.is-invalid]="device.name === ''" class="form-control" required>
+                            <div class="invalid-feedback" i18n>
+                               device name can't not be empty!
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label" i18n>Description</label>
+                        <div class="col-md-10">
+                            <input type="text" name="description" [(ngModel)]="device.description" class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label class="col-md-2 col-form-label" i18n>Labels</label>
+                        <div class="col-md-10">
+                            <input type="text" name="labels" [(ngModel)]="deviceLabels"  class="form-control">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="adminState" class="col-md-2 col-form-label" i18n>AdminState</label>
+                        <div class="col-md-10">
+                            <select class="custom-select"  name="adminState" [(ngModel)]="device.adminState">
+                                <option value="UNLOCKED">UNLOCKED</option>
+                                <option value="LOCKED">LOCKED</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="operatingState" class="col-md-2 col-form-label" i18n>OperatingState</label>
+                        <div class="col-md-10">
+                            <input type="text" name="operatingState" disabled [value]="device.operatingState" class="form-control">
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <app-device-service-list 
+            (singleDeviceSvcSelectedEvent)="onSingleDeviceSvcSelected($event)" 
+            [deviceSvcSelected]="selectedSvc"></app-device-service-list>
+        </div>
+
+        <div class="mb-3">
+            <app-device-profile-list  
+            (singleProfileSelectedEvent)="onSingleProfileSelected($event)" 
+            [enableSelectAll]="false" [toolbars]="false" 
+            [singleProfileSelected]="selectedProfile"
+            [associatedDeviceColumn]="false"></app-device-profile-list>
+        </div>
+
+        <div class="mb-3">
+            <app-device-protocol 
+            [mode]="'edit'"
+            [deviceProtocols]="device.protocols"
+            [(isValid)]="isProtocolValid"></app-device-protocol>
+        </div>
+
+       <div class="mb-3">
+            <app-device-auto-event 
+            [deviceProfile]="selectedProfile"
+            [(autoEvents)]="device.autoEvents"
+            [(isValid)]="isAutoEventsValid"
+            ></app-device-auto-event>
+       </div>
+    </div>
+</div>
