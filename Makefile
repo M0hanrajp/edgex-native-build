@@ -13,6 +13,7 @@ kill-consul-agent:
 # ==== EdegeX core services ====
 # Start core-common-config-bootstrapper service
 # This service will exit once it has seeded the Configuration Provider with the common config. ( Based on documentation )
+
 start-core-common-config-bootstrapper:
 	@cd edgex-go-3.1.1/cmd/core-common-config-bootstrapper && nohup ./core-common-config-bootstrapper -cp=consul.http://127.0.0.1:8500 > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-common-config-bootstrapper/nohup.out 2>&1 &
 	@echo "::: core-common-config-bootstrapper has pushed configuraitons :::"
@@ -25,6 +26,7 @@ start-core-metadata:
 kill-core-metadata:
 	@ps aux | grep "core-metadata" | grep -v grep | awk '{print $$2}' | xargs kill -15 > /dev/null 2>&1 &
 	@echo "::: EdgeX core-metadata has stopped working :::" 
+# It's important to start the services as listed in the order from https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#run-edgex
 
 # edgex core-data service
 start-core-data:
@@ -80,7 +82,7 @@ kill-device-virtual:
 	@ps aux | grep "device-virtual" | grep -v grep | awk '{print $$2}' | xargs kill -15 > /dev/null 2>&1 &
 	@echo "::: EdgeX device-virtual has stopped working :::"
 
-# edgex ekuiper service
+# edgex ekuiper service (rules engine)
 start-ekuiper:
 	@make kill-ekuiper
 	@./ekuiper-1.14.0/ekuiper_set_env_vars.sh
@@ -111,6 +113,7 @@ kill-ekuiper:
 	@echo "::: EdgeX ekuiper has stopped working :::" 
 
 # edgex ui-server service
+# The EdgeX graphical user interface (GUI) provides an easy to use visual tool to monitor data passing through EdgeX services.
 start-edgex-ui-server:
 	@cd edgex-ui-go-3.1.0/cmd/edgex-ui-server && nohup ./edgex-ui-server > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-ui-server/nohup.out 2>&1 &
 	@echo "::: EdgeX ui-server is running... :::"
