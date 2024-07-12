@@ -39,9 +39,6 @@ You can mention it like this:
 
 Logs for each service will be stored in their respective service folders within the `edgex-service-logs` directory, located in the root directory where this repository is cloned.
 
----
-
-This should clearly convey where the logs are stored. Let me know if you need any further adjustments! 😊
 ### Notes
 
 - Ensure to start the services in the order specified in the [EdgeX Foundry documentation](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#run-edgex).
