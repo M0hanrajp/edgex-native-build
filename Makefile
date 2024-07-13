@@ -30,7 +30,7 @@ kill-core-metadata:
 
 # edgex core-data service
 start-core-data:
-	@cd edgex-go-3.1.1/cmd/core-data/ && nohup ./core-data -cp=consul.http://127.0.0.1:8500 -registry > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-data/nohup.out 2>&1 &
+	@cd edgex-go-3.1.1/cmd/core-data/ && nohup ./core-data -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-data/nohup.out 2>&1 &
 	@echo "::: EdgeX core-data is running... :::"
 	
 kill-core-data:
@@ -84,8 +84,18 @@ kill-device-virtual:
 
 # edgex ekuiper service (rules engine)
 start-ekuiper:
-	@make kill-ekuiper
-	@./ekuiper-1.14.0/ekuiper_set_env_vars.sh
+	@export CONNECTION__EDGEX__REDISMSGBUS__PORT=6379
+	@export CONNECTION__EDGEX__REDISMSGBUS__PROTOCOL=redis
+	@export CONNECTION__EDGEX__REDISMSGBUS__SERVER=localhost
+	@export CONNECTION__EDGEX__REDISMSGBUS__TYPE=redis
+	@export EDGEX__DEFAULT__PORT=6379
+	@export EDGEX__DEFAULT__PROTOCOL=redis
+	@export EDGEX__DEFAULT__SERVER=localhost
+	@export EDGEX__DEFAULT__TOPIC=rules-events
+	@export EDGEX__DEFAULT__TYPE=redis
+	@export KUIPER__BASIC__CONSOLELOG="true"
+	@export KUIPER__BASIC__RESTPORT=59720
+	@echo ":::All environment variables set :::"
 	@cd ekuiper-1.14.0/_build/kuiper--linux-amd64/bin && nohup ./kuiperd > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/ekuiper/nohup.out 2>&1 &
 	@echo "::: EdgeX ekuiper is running... :::"
 	
@@ -93,7 +103,6 @@ start-ekuiper:
 # The condition will only be entered when pid will not be empty.
 #     1. **`@pid=`**:
 #    - This part assigns the output of the following command to the variable `pid`.
-#
 #    2. **`$$(sudo lsof -t -i :9081)`**:
 #    - `$$`: In a `Makefile`, `$$` is used to escape the dollar sign, so it gets passed to the shell as a single `$`.
 #    - `sudo`: Runs the command with superuser privileges.
@@ -115,10 +124,24 @@ kill-ekuiper:
 # edgex ui-server service
 # The EdgeX graphical user interface (GUI) provides an easy to use visual tool to monitor data passing through EdgeX services.
 start-edgex-ui-server:
-	@cd edgex-ui-go-3.1.0/cmd/edgex-ui-server && nohup ./edgex-ui-server > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-ui-server/nohup.out 2>&1 &
+	@cd edgex-ui-go-3.1.0/cmd/edgex-ui-server && nohup ./edgex-ui-server -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-ui-server/nohup.out 2>&1 &
 	@echo "::: EdgeX ui-server is running... :::"
 
 # the output from executing the command is redirected so it wont print any output
 kill-edgex-ui-server:
 	@ps aux | grep "edgex-ui-server" | grep -v grep | awk '{print $$2}' | xargs kill -15 > /dev/null 2>&1 &
 	$ @echo "::: EdgeX ui-server has stopped working :::"
+
+# ALl service status:
+edgex-service-status:
+	@echo "USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
+	@ps aux | grep consul.agent | grep -v grep
+	@ps aux | grep core-metadata | grep -v grep
+	@ps aux | grep core-data | grep -v grep
+	@ps aux | grep core-command | grep -v grep
+	@ps aux | grep support-notifications | grep -v grep
+	@ps aux | grep support-scheduler | grep -v grep
+	@ps aux | grep app-service-configurable | grep -v grep
+	@ps aux | grep device-virtual | grep -v grep
+	@ps aux | grep edgex-ui-server | grep -v grep
+	@ps aux | grep kuiperd | grep -v grep
