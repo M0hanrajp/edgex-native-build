@@ -1,6 +1,6 @@
 ScheduleIntervalTime: 500
 Writable:
-    LogLevel: INFO
+    LogLevel: TRACE
 Service:
     Host: localhost
     Port: 59861

@@ -1,6 +1,6 @@
 MaxEventSize: 25000 # Defines the maximum event size in kilobytes
 Writable:
-  LogLevel: "INFO"
+  LogLevel: TRACE
   PersistData: true
   Telemetry:
     Metrics: # All service's metric names must be present in this list.

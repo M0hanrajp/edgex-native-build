@@ -1,5 +1,5 @@
 Writable:
-  LogLevel: INFO
+  LogLevel: TRACE
   ResendLimit: 2
   ResendInterval: 5s
   InsecureSecrets:
