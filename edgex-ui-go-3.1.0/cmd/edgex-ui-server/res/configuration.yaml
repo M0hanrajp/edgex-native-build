@@ -32,7 +32,7 @@ Clients:
     rules-engine:
         Protocol: http
         Host: localhost
-        Port: 59720
+        Port: 9081
 Registry:
     Host: localhost
     Port: 8500
