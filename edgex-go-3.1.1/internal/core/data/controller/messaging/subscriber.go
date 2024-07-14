@@ -30,36 +30,35 @@ import (
 
 // SubscribeEvents subscribes to events from message bus
 func SubscribeEvents(ctx context.Context, dic *di.Container) errors.EdgeX {
+	// Retrieve message bus configuration and logging client from the DI container.
 	messageBusInfo := dataContainer.ConfigurationFrom(dic.Get).MessageBus
 	lc := container.LoggingClientFrom(dic.Get)
-
+	// Retrieve the message bus client from the DI container.
 	messageBus := container.MessagingClientFrom(dic.Get)
 	// Added this variable to check messageBus value
 	lc.Infof("MessageBus: %+v", messageBus)
-
+	// Create channels for receiving messages and errors.
 	messages := make(chan types.MessageEnvelope)
 	messageErrors := make(chan error)
-
+	// Retrieve the core data application instance from the DI container.
 	app := application.CoreDataAppFrom(dic.Get)
-	// Added this variable to check app value
-	lc.Infof("CoreDataApp: %+v", app)
-
+	// Build the subscription topic using the base topic prefix and core-data event subscribe topic.
 	subscribeTopic := common.BuildTopic(messageBusInfo.GetBaseTopicPrefix(), common.CoreDataEventSubscribeTopic)
 	// Added this variable to check subscribeTopic value
 	lc.Infof("SubscribeTopic: %s", subscribeTopic)
-
+	// Define the topics to subscribe to, with each topic associated with a channel for receiving messages.
 	topics := []types.TopicChannel{
 		{
 			Topic:    subscribeTopic,
 			Messages: messages,
 		},
 	}
-
+	// Subscribe to the message bus topics.
 	err := messageBus.Subscribe(topics, messageErrors)
 	if err != nil {
 		return errors.NewCommonEdgeXWrapper(err)
 	}
-
+	// Start a goroutine to handle incoming messages and errors.
 	go func() {
 		for {
 			select {
@@ -67,27 +66,33 @@ func SubscribeEvents(ctx context.Context, dic *di.Container) errors.EdgeX {
 				lc.Infof("Exiting waiting for MessageBus '%s' topic messages", subscribeTopic)
 				return
 			case e := <-messageErrors:
+				// Log any errors received from the message bus.
 				lc.Error(e.Error())
 			case msgEnvelope := <-messages:
+				// Log the received message.
 				lc.Debugf("Event received from MessageBus. Topic: %s, Correlation-id: %s", msgEnvelope.ReceivedTopic, msgEnvelope.CorrelationID)
 				event := &requests.AddEventRequest{}
 				// decoding the large payload may cause memory issues so checking before decoding
+				// Check the payload size to avoid memory issues.
 				maxEventSize := dataContainer.ConfigurationFrom(dic.Get).MaxEventSize
 				edgeXerr := utils.CheckPayloadSize(msgEnvelope.Payload, maxEventSize*1024)
 				if edgeXerr != nil {
 					lc.Errorf("event size exceed MaxEventSize(%d KB)", maxEventSize)
 					break
 				}
+				// Unmarshal the payload into an AddEventRequest object.
 				err = unmarshalPayload(msgEnvelope, event)
 				if err != nil {
 					lc.Errorf("fail to unmarshal event, %v", err)
 					break
 				}
+				// Validate the event against the message topic.
 				err = validateEvent(msgEnvelope.ReceivedTopic, event.Event)
 				if err != nil {
 					lc.Error(err.Error())
 					break
 				}
+				// Add the event to the core-data service.
 				err = app.AddEvent(requests.AddEventReqToEventModel(*event), ctx, dic)
 				if err != nil {
 					lc.Errorf("fail to persist the event, %v", err)
@@ -99,6 +104,7 @@ func SubscribeEvents(ctx context.Context, dic *di.Container) errors.EdgeX {
 	return nil
 }
 
+// unmarshalPayload decodes the message payload based on its content type (JSON or CBOR).
 func unmarshalPayload(envelope types.MessageEnvelope, target interface{}) error {
 	var err error
 	switch envelope.ContentType {
@@ -114,6 +120,7 @@ func unmarshalPayload(envelope types.MessageEnvelope, target interface{}) error 
 	return err
 }
 
+// validateEvent validates the event fields against the message topic to ensure they match.
 func validateEvent(messageTopic string, e dtos.Event) errors.EdgeX {
 	// Parse messageTopic by the pattern `edgex/events/device/<device-service-name>/<device-profile-name>/<device-name>/<source-name>`
 	fields := strings.Split(messageTopic, "/")
