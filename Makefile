@@ -15,12 +15,12 @@ kill-consul-agent:
 # This service will exit once it has seeded the Configuration Provider with the common config. ( Based on documentation )
 
 start-core-common-config-bootstrapper:
-	@cd edgex-go-3.1.1/cmd/core-common-config-bootstrapper && nohup ./core-common-config-bootstrapper -cp=consul.http://127.0.0.1:8500 > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-common-config-bootstrapper/nohup.out 2>&1 &
+	@cd edgex-go-3.1.1/cmd/core-common-config-bootstrapper && nohup ./core-common-config-bootstrapper -cp=consul.http://127.0.0.1:8500 -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-common-config-bootstrapper/nohup.out 2>&1 &
 	@echo "::: core-common-config-bootstrapper has pushed configuraitons :::"
 
 # edgex core-metadata service
 start-core-metadata:
-	@cd edgex-go-3.1.1/cmd/core-metadata/ && nohup ./core-metadata -cp=consul.http://127.0.0.1:8500 -registry > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-metadata/nohup.out 2>&1 &
+	@cd edgex-go-3.1.1/cmd/core-metadata/ && nohup ./core-metadata -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-metadata/nohup.out 2>&1 &
 	@echo "::: EdgeX core-metadata is running... :::"
 	
 kill-core-metadata:
@@ -39,7 +39,7 @@ kill-core-data:
 
 # edgex core-command service
 start-core-command:
-	@cd edgex-go-3.1.1/cmd/core-command/ && nohup ./core-command -cp=consul.http://127.0.0.1:8500 -registry > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-command/nohup.out 2>&1 &
+	@cd edgex-go-3.1.1/cmd/core-command/ && nohup ./core-command -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-command/nohup.out 2>&1 &
 	@echo "::: EdgeX core-command is running... :::"
 	
 kill-core-command:
@@ -48,7 +48,7 @@ kill-core-command:
 
 # edgex support-notifications service
 start-support-notifications:
-	@cd edgex-go-3.1.1/cmd/support-notifications/ && nohup ./support-notifications -cp=consul.http://127.0.0.1:8500 -registry > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/support-notifications/nohup.out 2>&1 &
+	@cd edgex-go-3.1.1/cmd/support-notifications/ && nohup ./support-notifications -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/support-notifications/nohup.out 2>&1 &
 	@echo "::: EdgeX support-notifications is running... :::"
 	
 kill-support-notifications:
@@ -57,7 +57,7 @@ kill-support-notifications:
 
 # edgex support-scheduler service
 start-support-scheduler:
-	@cd edgex-go-3.1.1/cmd/support-scheduler/ && nohup ./support-scheduler -cp=consul.http://127.0.0.1:8500 -registry > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/support-scheduler/nohup.out 2>&1 &
+	@cd edgex-go-3.1.1/cmd/support-scheduler/ && nohup ./support-scheduler -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/support-scheduler/nohup.out 2>&1 &
 	@echo "::: EdgeX support-scheduler is running... :::"
 	
 kill-support-scheduler:
@@ -66,7 +66,7 @@ kill-support-scheduler:
 
 # edgex app-service-configurable service
 start-app-service-configurable:
-	@cd app-service-configurable-3.1.1/ && nohup ./app-service-configurable -cp=consul.http://127.0.0.1:8500 -registry -p=rules-engine > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/app-service-configurable/nohup.out 2>&1 &
+	@cd app-service-configurable-3.1.1/ && nohup ./app-service-configurable -cp=consul.http://127.0.0.1:8500 -registry -p=rules-engine -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/app-service-configurable/nohup.out 2>&1 &
 	@echo "::: EdgeX app-service-configurable is running... :::"
 	
 kill-app-service-configurable:
@@ -75,7 +75,7 @@ kill-app-service-configurable:
 
 # edgex device-virtual service
 start-device-virtual:
-	@cd device-virtual-go-3.1.1/cmd && nohup ./device-virtual -cp=consul.http://127.0.0.1:8500 -registry > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/device-virtual/nohup.out 2>&1 &
+	@cd device-virtual-go-3.1.1/cmd && nohup ./device-virtual -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/device-virtual/nohup.out 2>&1 &
 	@echo "::: EdgeX device-virtual is running... :::"
 	
 kill-device-virtual:
