@@ -1,85 +1,37 @@
 # Function to show loading animation
-# This function runs an infinite loop displaying a rotating character to simulate a loading animation.
 define show_loading
-  while :; do
-    for s in / - \\ \|; do
-      printf "\r$s"  # Print the rotating character
-      sleep 0.1      # Wait for 0.1 seconds before changing the character
-    done
+  while :; do \
+    for s in ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏; do \
+      printf "\r\033[33m$$s Container edgex-core-consul ::: started\033[0m"; \
+      sleep 0.05; \
+    done; \
   done
 endef
 
 # Function to check service status
-# This function runs an infinite loop checking if the service at the given port returns a 200 OK status.
-# If it does, it prints a green tick mark and breaks the loop.
 define check_service
-  while :; do
-    if curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:$(1) | grep -q "200"; then
-      printf "\r\033[32m✔\033[0m\n"  # Print a green tick mark
-      break  # Exit the loop
-    fi
-    sleep 1  # Wait for 1 second before checking again
+  START_TIME=$$(date +%s); \
+  END_TIME=$$((START_TIME + 18)); \
+  while :; do \
+    CURRENT_TIME=$$(date +%s); \
+    if [ $$CURRENT_TIME -ge $$END_TIME ]; then \
+      printf "\r\033[31m⠹ Container edgex-core-consul ::: failed!\033[0m\n"; \
+      kill $${LOADING_PID}; \
+      break; \
+    elif curl -s -o /dev/null -w "%{http_code}" http://127.0.0.2:8500/v1/status/leader | grep -q "200"; then \
+      if [ $$CURRENT_TIME -ge $$((START_TIME + 5)) ]; then \
+        printf "\r\033[32m✔ Container edgex-core-consul ::: Running\033[0m\n"; \
+        kill $${LOADING_PID}; \
+        break; \
+      fi; \
+    fi; \
+    sleep 1; \
   done
 endef
 
 # Target to start all EdgeX services
 start-all-services:
-	@echo "Starting all EdgeX services..."
-	@$(call show_loading) &  # Start the loading animation in the background
-
-	# Start the Consul agent
 	@nohup consul agent -ui -bootstrap -server -client 127.0.0.1 -bind 127.0.0.1 -advertise 127.0.0.1 -data-dir=tmp/consul > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-consul-agent/nohup.out 2>&1 &
-	@echo "Starting consul agent..."
-	@$(call check_service,8500)  # Check if the Consul agent is up and running
-
-	# Start the core-common-config-bootstrapper service
-	@nohup ./core-common-config-bootstrapper -cp=consul.http://127.0.0.1:8500 -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-common-config-bootstrapper/nohup.out 2>&1 &
-	@echo "Starting core-common-config-bootstrapper..."
-	@$(call check_service,8500)  # Check if the core-common-config-bootstrapper service is up and running
-
-	# Start the core-metadata service
-	@nohup ./core-metadata -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-metadata/nohup.out 2>&1 &
-	@echo "Starting core-metadata..."
-	@$(call check_service,8500)  # Check if the core-metadata service is up and running
-
-	# Start the core-data service
-	@nohup ./core-data -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-data/nohup.out 2>&1 &
-	@echo "Starting core-data..."
-	@$(call check_service,8500)  # Check if the core-data service is up and running
-
-	# Start the core-command service
-	@nohup ./core-command -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/core-command/nohup.out 2>&1 &
-	@echo "Starting core-command..."
-	@$(call check_service,8500)  # Check if the core-command service is up and running
-
-	# Start the support-notifications service
-	@nohup ./support-notifications -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/support-notifications/nohup.out 2>&1 &
-	@echo "Starting support-notifications..."
-	@$(call check_service,8500)  # Check if the support-notifications service is up and running
-
-	# Start the support-scheduler service
-	@nohup ./support-scheduler -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/support-scheduler/nohup.out 2>&1 &
-	@echo "Starting support-scheduler..."
-	@$(call check_service,8500)  # Check if the support-scheduler service is up and running
-
-	# Start the app-service-configurable service
-	@nohup ./app-service-configurable -cp=consul.http://127.0.0.1:8500 -registry -p=rules-engine -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/app-service-configurable/nohup.out 2>&1 &
-	@echo "Starting app-service-configurable..."
-	@$(call check_service,8500)  # Check if the app-service-configurable service is up and running
-
-	# Start the device-virtual service
-	@nohup ./device-virtual -cp=consul.http://127.0.0.1:8500 -registry -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/device-virtual/nohup.out 2>&1 &
-	@echo "Starting device-virtual..."
-	@$(call check_service,8500)  # Check if the device-virtual service is up and running
-
-	# Start the ekuiper service
-	@nohup ./kuiperd > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/ekuiper/nohup.out 2>&1 &
-	@echo "Starting ekuiper..."
-	@$(call check_service,59720)  # Check if the ekuiper service is up and running
-
-	# Start the edgex-ui-server service
-	@nohup ./edgex-ui-server -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-ui-server/nohup.out 2>&1 &
-	@echo "Starting edgex-ui-server..."
-	@$(call check_service,4000)  # Check if the edgex-ui-server service is up and running
-
-	@echo "All services are up and running!"  # Print a final message indicating all services are running
+	@$(call show_loading) & \
+	LOADING_PID=$$!; \
+	$(call check_service)
