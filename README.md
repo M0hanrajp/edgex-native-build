@@ -52,6 +52,20 @@ You can mention it like this:
 
 Logs for each service will be stored in their respective service folders within the `edgex-service-logs` directory, located in the root directory where this repository is cloned.
 
+### Makefile (advanced)
+
+Q: What is it ?
+A: This file is being implemented with better info (as start, running, failed!) on edgex services with better formatted output such as loading animations & checkmarks. This file is at it's earliest stage and will be improved with multiple tests while running the services.
+
+Below are a few snapshots of the current Makefile_advanced:
+
+When starting a service:
+
+When the service is reported running:
+
+When the service fails to run:
+
+
 ### Notes
 
 - Ensure to start the services in the order specified in the [EdgeX Foundry documentation](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#run-edgex).
