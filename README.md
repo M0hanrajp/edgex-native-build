@@ -54,17 +54,17 @@ Logs for each service will be stored in their respective service folders within 
 
 ### Makefile (advanced)
 
-Q: What is it ?
+**Q: What is it ?**
 A: This file is being implemented with better info (as start, running, failed!) on edgex services with better formatted output such as loading animations & checkmarks. This file is at it's earliest stage and will be improved with multiple tests while running the services.
 
 Below are a few snapshots of the current Makefile_advanced:
 
-When starting a service:
-
-When the service is reported running:
-
-When the service fails to run:
-
+**When starting a service:**
+![Screenshot 2024-07-17 164257](https://github.com/user-attachments/assets/7607d903-37d4-444e-845b-43f15c210a79)
+**When the service is reported running:**
+![Screenshot 2024-07-17 164421](https://github.com/user-attachments/assets/c7eee7cf-bccc-4d0c-b6b9-8dfdcf67dcb3)
+**When the service fails to run:**
+![Screenshot 2024-07-17 1645316](https://github.com/user-attachments/assets/5bd27718-130d-40c9-8ac9-25814a18fcc4)
 
 ### Notes
 
