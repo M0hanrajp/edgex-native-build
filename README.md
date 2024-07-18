@@ -60,11 +60,16 @@ A: This file is being implemented with better info (as start, running, failed!) 
 Below are a few snapshots of the current Makefile_advanced:
 
 **When starting a service:**
-![Screenshot 2024-07-17 164257](https://github.com/user-attachments/assets/7607d903-37d4-444e-845b-43f15c210a79)
+
+![image](https://github.com/user-attachments/assets/0c667a67-2e3d-469f-afa0-52583cabf741)
+
 **When the service is reported running:**
-![Screenshot 2024-07-17 164421](https://github.com/user-attachments/assets/c7eee7cf-bccc-4d0c-b6b9-8dfdcf67dcb3)
+
+![image](https://github.com/user-attachments/assets/1ebcabe5-c372-40d0-a163-b5eab10e8850)
+
 **When the service fails to run:**
-![Screenshot 2024-07-17 1645316](https://github.com/user-attachments/assets/5bd27718-130d-40c9-8ac9-25814a18fcc4)
+
+![image](https://github.com/user-attachments/assets/b88df43a-1cbf-497f-b7a0-b11458ef4ec5)
 
 ### Notes
 
