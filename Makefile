@@ -145,3 +145,29 @@ edgex-service-status:
 	@ps aux | grep device-virtual | grep -v grep
 	@ps aux | grep edgex-ui-server | grep -v grep
 	@ps aux | grep kuiperd | grep -v grep
+
+# Implementation of stopping all the services.
+# Kill all EdgeX services and verify they have stopped with loading animation
+# Kill all EdgeX services and verify they have stopped with loading animation
+kill-all-services:
+	@ps aux | grep 'consul agent' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'core-metadata' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'core-data' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'core-command' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'support-notifications' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'support-scheduler' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'app-service-configurable' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'device-virtual' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'edgex-ui-server' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'kuiperd' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@while ps aux | grep -E 'consul agent|core-metadata|core-data|core-command|support-notifications|support-scheduler|app-service-configurable|device-virtual|edgex-ui-server|kuiperd' | grep -v grep > /dev/null; do \
+			for c in ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏; do \
+					printf "\r\033[33m$$c Edgex service is killing all services, please wait.. ::: started\033[0m"; \
+					sleep 0.05; \
+			done; \
+	done
+	@if ps aux | grep -E 'consul agent|core-metadata|core-data|core-command|support-notifications|support-scheduler|app-service-configurable|device-virtual|edgex-ui-server|kuiperd' | grep -v grep > /dev/null; then \
+			echo "\033[33m::: EdgeX services are still running :::\033[0m"; \
+	else \
+			echo "\033[32m✔ ::: All EdgeX services have stopped working :::\033[0m"; \
+	fi
