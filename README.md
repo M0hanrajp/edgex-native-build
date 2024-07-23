@@ -49,7 +49,7 @@ make kill-core-metadata
 **Stop all services using a single command**
 ```bash
 // example:
-mpunix@LIN-MP22QN1X:~/edgex-foundry/edgex-native-build-3.1-napa$ make kill-all-services
+~/edgex-foundry/edgex-native-build-3.1-napa$ make kill-all-services
 ✔ ::: All EdgeX services have stopped working :::
 ```
 
