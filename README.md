@@ -34,19 +34,24 @@ Make sure to update the paths in the Makefile according to your directory struct
 
 Sure! Here's the common syntax for executing the services along with an example:
 
-- **Start a service:** 
+**Start a service:** 
 ```bash
 make start-<service-name> 
 // example:
 make start-core-metadata
 ```
-- **Stop a service:**
+**Stop a service:**
 ```bash
 make kill-<service-name>
 // example:
 make kill-core-metadata
 ```
-You can mention it like this:
+**Stop all services using a single command**
+```bash
+// example:
+mpunix@LIN-MP22QN1X:~/edgex-foundry/edgex-native-build-3.1-napa$ make kill-all-services
+✔ ::: All EdgeX services have stopped working :::
+```
 
 ### Log Storage
 
