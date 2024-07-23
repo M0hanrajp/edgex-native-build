@@ -1,3 +1,33 @@
+## EdgeX native build Security Policy
+
+This project aims to improve the native build of EdgeX using Makefile it is not responsible for security issues or the support of EdgeX services. The services already present in the repository are just an example to showcase how the code can be cloned to your local machine and how provided Makefile can improve the development workflow.
+
+In order to report any security issues with EdgeX services, please follow the below links.
+
+### Supported Versions
+
+Not every EdgeX release receives security support.
+Please consult the EdgeX Foundry Wiki for information on the
+[EdgeX Long Term Support Policy](https://wiki.edgexfoundry.org/pages/viewpage.action?pageId=69173332).
+
+
+### Reporting Vulnerabilities
+
+Instructions to report a vulnerability may be found on the
+[security page of the EdgeX Foundry Wiki](https://wiki.edgexfoundry.org/display/FA/Security).
+
+
+### Questions
+
+Questions on the EdgeX security policy can be raised in the
+[EdgeX Security Working Group](https://wiki.edgexfoundry.org/display/FA/Security+Working+Group?src=contextnavpagetreemode)
+or to the 
+[EdgeX Technical Steering Committee](https://wiki.edgexfoundry.org/pages/viewpage.action?pageId=329436&src=contextnavpagetreemode).
+
+---
+
+Below are the current package versions being used to explore the project.
+
 ## Supported Versions
 
 Please follow the below versions of packages required to build and run edgex as intended.
