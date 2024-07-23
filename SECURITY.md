@@ -28,10 +28,6 @@ or to the
 
 Below are the current package versions being used to explore the project.
 
-## Supported Versions
-
-Please follow the below versions of packages required to build and run edgex as intended.
-
 ### System Information
 ```sh
 ~$ lsb_release -a
