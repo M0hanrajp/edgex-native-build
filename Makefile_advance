@@ -1,3 +1,10 @@
+################################################################################################
+# This Makefile is intended to make executing, building and testing of edgex services convinient
+# This Makefile aims to acheive this using without docker
+# Makefile advanced is similar to Makefile but includes some cool aesthetics
+# Makefile advanced most of the functionalities will be improved from the UI perspective.
+################################################################################################
+
 # Function to show loading animation
 define show_loading
   while :; do \
@@ -29,9 +36,39 @@ define check_service
   done
 endef
 
-# Target to start all EdgeX services
+###################################################################################################
+# The below seciton of Makefile enables user to start and end edgex services using a single command
+###################################################################################################
+
+# Makefile command that will allow to start all services at once.
+# Currently only consul is up and running as a service, need to implement for other service as well
 start-all-services:
 	@nohup consul agent -ui -bootstrap -server -client 127.0.0.1 -bind 127.0.0.1 -advertise 127.0.0.1 -data-dir=tmp/consul > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-consul-agent/nohup.out 2>&1 &
 	@$(call show_loading) & \
 	LOADING_PID=$$!; \
 	$(call check_service)
+
+# Makefile command that will allow to stop all services at once.
+# Is able to stop all the services but, after the loading animation, sucess log is defined beside loading animation which needs fixing.
+stop-all-services:
+	@ps aux | grep 'consul agent' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'core-metadata' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'core-data' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'core-command' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'support-notifications' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'support-scheduler' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'app-service-configurable' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'device-virtual' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'edgex-ui-server' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'kuiperd' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@while ps aux | grep -E 'consul agent|core-metadata|core-data|core-command|support-notifications|support-scheduler|app-service-configurable|device-virtual|edgex-ui-server|kuiperd' | grep -v grep > /dev/null; do \
+			for c in ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏; do \
+					printf "\r\033[33m$$c Edgex service is killing all services, please wait.. ::: started\033[0m"; \
+					sleep 0.05; \
+			done; \
+	done
+	@if ps aux | grep -E 'consul agent|core-metadata|core-data|core-command|support-notifications|support-scheduler|app-service-configurable|device-virtual|edgex-ui-server|kuiperd' | grep -v grep > /dev/null; then \
+			echo "\033[33m::: EdgeX services are still running :::\033[0m"; \
+	else \
+			echo "\033[32m✔ ::: All EdgeX services have stopped working :::\033[0m"; \
+	fi
