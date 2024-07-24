@@ -32,7 +32,7 @@ Make sure to update the paths in the Makefile according to your directory struct
 
 ### Usage
 
-Sure! Here's the common syntax for executing the services along with an example:
+Sure! Here's the common syntax for executing the services (bring up a service at a time) along with an example:
 
 **Start a service:** 
 ```bash
@@ -54,30 +54,31 @@ make kill-core-metadata
 ```
 
 ### Log Storage
-
 Logs for each service will be stored in their respective service folders within the `edgex-service-logs` directory, located in the root directory where this repository is cloned.
 
-### Makefile (advanced)
-
+### Makefile_advanced
 **Q: What is it ?**
 A: This file is being implemented with better info (as start, running, failed!) on edgex services with better formatted output such as loading animations & checkmarks. This file is at it's earliest stage and will be improved with multiple tests while running the services.
 
 Below are a few snapshots of the current Makefile_advanced:
 
 **When starting a service:**
-
-![image](https://github.com/user-attachments/assets/0c667a67-2e3d-469f-afa0-52583cabf741)
-
+```bash
+~/edgex-foundry/edgex-native-build-3.1-napa$ make -f Makefile_advance start-all-services
+{Loading animation} Container edgex-core-consul: started {cursor}
+```
 **When the service is reported running:**
-
-![image](https://github.com/user-attachments/assets/1ebcabe5-c372-40d0-a163-b5eab10e8850)
-
+```bash
+~/edgex-foundry/edgex-native-build-3.1-napa$ make -f Makefile_advance start-all-services
+{checkmark logo} Container edgex-core-consul ::: Running
+```
 **When the service fails to run:**
-
-![image](https://github.com/user-attachments/assets/b88df43a-1cbf-497f-b7a0-b11458ef4ec5)
+```bash
+~/edgex-foundry/edgex-native-build-3.1-napa$ make -f Makefile_advance start-all-services
+{Loading animation} Container edgex-core-consul: failed!
+```
 
 ### Notes
-
 - Ensure to start the services in the order specified in the [EdgeX Foundry documentation](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#run-edgex).
 - The kill commands use `SIGTERM` `(signal 15)` to stop the services gracefully. However, after stopping the service, the Consul UI will not indicate if the service is reachable or not. 
 - You can also use `SIGKILL` `(signal 9)`, which will forcefully stop the service and the Consul UI will indicate if a service is reachable or not.
