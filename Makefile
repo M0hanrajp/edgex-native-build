@@ -1,6 +1,10 @@
-# Simple Makefile for easy execution of tasks
+################################################################################################
+# This Makefile is intended to make executing, building and testing of edgex services convinient
+# This Makefile aims to acheive this using without docker
+################################################################################################
 
-# consul agent
+# consul agent & executing environment variable export EDGEX_SECURITY_SECRET_STORE to false.
+# The configuration is set to false so that current config can run without security.
 start-consul-agent:
 	@nohup consul agent -ui -bootstrap -server -client 127.0.0.1 -bind 127.0.0.1 -advertise 127.0.0.1 -data-dir=tmp/consul > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-consul-agent/nohup.out 2>&1 &
 	@echo "::: EdgeX consul-agent is running... :::"
@@ -10,8 +14,14 @@ kill-consul-agent:
 	@ps aux | grep 'consul agent' | grep -v grep | awk '{print $$2}' | xargs kill -15
 	@echo "::: EdgeX consul-agent has stopped working :::"
 
-# ==== EdegeX core services ====
-# Start core-common-config-bootstrapper service
+######################################################################################################
+# The below section of Makefile contains single commands for executing and disabling an edgex service.
+# User is allowed to have flexibility in choosing which service to enable and disable
+# For fine tuning your configuration please change the directories mentioned in the commands below.
+# You need to make sure all your services located in X folder are structured the same as the Makefile.
+######################################################################################################
+
+# core-common-config-bootstrapper service
 # This service will exit once it has seeded the Configuration Provider with the common config. ( Based on documentation )
 
 start-core-common-config-bootstrapper:
@@ -82,6 +92,17 @@ kill-device-virtual:
 	@ps aux | grep "device-virtual" | grep -v grep | awk '{print $$2}' | xargs kill -15 > /dev/null 2>&1 &
 	@echo "::: EdgeX device-virtual has stopped working :::"
 
+# edgex ui-server service
+# The EdgeX graphical user interface (GUI) provides an easy to use visual tool to monitor data passing through EdgeX services.
+start-edgex-ui-server:
+	@cd edgex-ui-go-3.1.0/cmd/edgex-ui-server && nohup ./edgex-ui-server -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-ui-server/nohup.out 2>&1 &
+	@echo "::: EdgeX ui-server is running... :::"
+
+# the output from executing the command is redirected so it wont print any output
+kill-edgex-ui-server:
+	@ps aux | grep "edgex-ui-server" | grep -v grep | awk '{print $$2}' | xargs kill -15 > /dev/null 2>&1 &
+	$ @echo "::: EdgeX ui-server has stopped working :::"
+
 # edgex ekuiper service (rules engine)
 start-ekuiper:
 	@export CONNECTION__EDGEX__REDISMSGBUS__PORT=6379
@@ -121,19 +142,44 @@ kill-ekuiper:
 	fi
 	@echo "::: EdgeX ekuiper has stopped working :::" 
 
-# edgex ui-server service
-# The EdgeX graphical user interface (GUI) provides an easy to use visual tool to monitor data passing through EdgeX services.
-start-edgex-ui-server:
-	@cd edgex-ui-go-3.1.0/cmd/edgex-ui-server && nohup ./edgex-ui-server -o > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-ui-server/nohup.out 2>&1 &
-	@echo "::: EdgeX ui-server is running... :::"
+###################################################################################################
+# The below seciton of Makefile enables user to start and end edgex services using a single command
+###################################################################################################
 
-# the output from executing the command is redirected so it wont print any output
-kill-edgex-ui-server:
-	@ps aux | grep "edgex-ui-server" | grep -v grep | awk '{print $$2}' | xargs kill -15 > /dev/null 2>&1 &
-	$ @echo "::: EdgeX ui-server has stopped working :::"
+# Implementation of starting all the services.
+edgex-services-start:
+	@$(MAKE) -s start-consul-agent > /dev/null
+	@$(MAKE) -s start-core-common-config-bootstrapper > /dev/null
+	@$(MAKE) -s start-core-metadata > /dev/null
+	@$(MAKE) -s start-core-data > /dev/null
+	@$(MAKE) -s start-core-command > /dev/null
+	@$(MAKE) -s start-support-notifications > /dev/null
+	@$(MAKE) -s start-support-scheduler > /dev/null
+	@$(MAKE) -s start-app-service-configurable > /dev/null
+	@$(MAKE) -s start-device-virtual > /dev/null
+	@$(MAKE) -s start-edgex-ui-server > /dev/null
+	@$(MAKE) -s start-ekuiper > /dev/null
+	@echo "\033[32m✔ ::: EdgeX services started! :::\033[0m"
 
+# Implementation of stopping all the services.
+edgex-services-stop:
+	@ps aux | grep 'consul agent' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
+	@ps aux | grep 'core-metadata' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'core-data' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'core-command' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'support-notifications' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'support-scheduler' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'app-service-configurable' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'device-virtual' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'edgex-ui-server' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@ps aux | grep 'kuiperd' | grep -v grep | awk '{print $$2}' | xargs -r kill -15 > /dev/null 2>&1 &
+	@echo "\033[32m✔ ::: EdgeX services stopped! :::\033[0m"
+
+####################################################
+# The below showcases services status, like PID etc.
 # ALl service status:
-edgex-service-status:
+#################################################### 
+edgex-services-status:
 	@echo "USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
 	@ps aux | grep consul.agent | grep -v grep
 	@ps aux | grep core-metadata | grep -v grep
@@ -145,29 +191,3 @@ edgex-service-status:
 	@ps aux | grep device-virtual | grep -v grep
 	@ps aux | grep edgex-ui-server | grep -v grep
 	@ps aux | grep kuiperd | grep -v grep
-
-# Implementation of stopping all the services.
-# Kill all EdgeX services and verify they have stopped with loading animation
-# Kill all EdgeX services and verify they have stopped with loading animation
-kill-all-services:
-	@ps aux | grep 'consul agent' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'core-metadata' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'core-data' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'core-command' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'support-notifications' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'support-scheduler' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'app-service-configurable' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'device-virtual' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'edgex-ui-server' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@ps aux | grep 'kuiperd' | grep -v grep | awk '{print $$2}' | xargs -r kill -15
-	@while ps aux | grep -E 'consul agent|core-metadata|core-data|core-command|support-notifications|support-scheduler|app-service-configurable|device-virtual|edgex-ui-server|kuiperd' | grep -v grep > /dev/null; do \
-			for c in ⠋ ⠙ ⠹ ⠸ ⠼ ⠴ ⠦ ⠧ ⠇ ⠏; do \
-					printf "\r\033[33m$$c Edgex service is killing all services, please wait.. ::: started\033[0m"; \
-					sleep 0.05; \
-			done; \
-	done
-	@if ps aux | grep -E 'consul agent|core-metadata|core-data|core-command|support-notifications|support-scheduler|app-service-configurable|device-virtual|edgex-ui-server|kuiperd' | grep -v grep > /dev/null; then \
-			echo "\033[33m::: EdgeX services are still running :::\033[0m"; \
-	else \
-			echo "\033[32m✔ ::: All EdgeX services have stopped working :::\033[0m"; \
-	fi
