@@ -45,6 +45,7 @@ func NewSqliteDatabase(c definition.Config, name string) (definition.Database, e
 		os.MkdirAll(dir, os.ModePerm)
 	}
 	dbPath := path.Join(dir, name)
+	logger.Log.Infof("Checking dbPath output = %v", dbPath)
 	return &Database{
 		db:   nil,
 		Path: dbPath,
