@@ -53,6 +53,8 @@ func SubscribeEvents(ctx context.Context, dic *di.Container) errors.EdgeX {
 			Messages: messages,
 		},
 	}
+	// Log the topics to which core-data is subscribing
+	lc.Infof("Subscribing to topics: %v", topics)
 	// Subscribe to the message bus topics.
 	err := messageBus.Subscribe(topics, messageErrors)
 	if err != nil {
