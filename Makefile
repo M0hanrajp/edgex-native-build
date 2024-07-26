@@ -156,9 +156,9 @@ edgex-services-start:
 	@$(MAKE) -s start-support-notifications > /dev/null
 	@$(MAKE) -s start-support-scheduler > /dev/null
 	@$(MAKE) -s start-app-service-configurable > /dev/null
-	@$(MAKE) -s start-device-virtual > /dev/null
-	@$(MAKE) -s start-edgex-ui-server > /dev/null
 	@$(MAKE) -s start-ekuiper > /dev/null
+	@$(MAKE) -s start-edgex-ui-server > /dev/null
+	@$(MAKE) -s start-device-virtual > /dev/null
 	@echo "\033[32m✔ ::: EdgeX services started! :::\033[0m"
 
 # Implementation of stopping all the services.
@@ -179,15 +179,21 @@ edgex-services-stop:
 # The below showcases services status, like PID etc.
 # ALl service status:
 #################################################### 
-edgex-services-status:
-	@echo "USER         PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND"
-	@ps aux | grep consul.agent | grep -v grep
-	@ps aux | grep core-metadata | grep -v grep
-	@ps aux | grep core-data | grep -v grep
-	@ps aux | grep core-command | grep -v grep
-	@ps aux | grep support-notifications | grep -v grep
-	@ps aux | grep support-scheduler | grep -v grep
-	@ps aux | grep app-service-configurable | grep -v grep
-	@ps aux | grep device-virtual | grep -v grep
-	@ps aux | grep edgex-ui-server | grep -v grep
-	@ps aux | grep kuiperd | grep -v grep
+edgex-services-show-status:
+	@echo "USER         PID %CPU %MEM    VSZ   RSS   TTY      STAT START   TIME COMMAND"
+	@status=""
+	@if ps aux | grep -E 'consul.agent|core-metadata|core-data|core-command|support-notifications|support-scheduler|app-service-configurable|device-virtual|edgex-ui-server|kuiperd' | grep -v grep > /dev/null; then \
+		ps aux | grep consul.agent | grep -v grep || status="$$status\nconsul.agent is not running"; \
+		ps aux | grep core-metadata | grep -v grep || status="$$status\ncore-metadata is not running"; \
+		ps aux | grep core-data | grep -v grep || status="$$status\ncore-data is not running"; \
+		ps aux | grep core-command | grep -v grep || status="$$status\ncore-command is not running"; \
+		ps aux | grep support-notifications | grep -v grep || status="$$status\nsupport-notifications is not running"; \
+		ps aux | grep support-scheduler | grep -v grep || status="$$status\nsupport-scheduler is not running"; \
+		ps aux | grep app-service-configurable | grep -v grep || status="$$status\napp-service-configurable is not running"; \
+		ps aux | grep edgex-ui-server | grep -v grep || status="$$status\nedgex-ui-server is not running"; \
+		ps aux | grep kuiperd | grep -v grep || status="$$status\nkuiperd is not running"; \
+		ps aux | grep device-virtual | grep -v grep || status="$$status\ndevice-virtual is not running"; \
+	else \
+		echo "No EdgeX services are currently running."; \
+	fi; \
+	echo "$$status"
