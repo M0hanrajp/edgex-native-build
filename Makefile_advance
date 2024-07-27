@@ -72,3 +72,10 @@ stop-all-services:
 	else \
 			echo "\033[32m✔ ::: All EdgeX services have stopped working :::\033[0m"; \
 	fi
+#####################################################
+# The below showcases services status, like PID etc..
+# ALl service status is shown with htop filtered view
+#####################################################
+edgex-services-htop-status:
+	@echo "::: Filtering EdgeX services and displaying with htop :::"
+	@./htop-filter.sh
