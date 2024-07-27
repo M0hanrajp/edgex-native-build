@@ -1,4 +1,4 @@
-# ⚙️ EdgeX native build on Linux x86/x64
+# EdgeX native build on Linux x86/x64
 
 This repository is for building and running EdgeX on Linux natively, the current build is performed over Ubuntu 22.04 & all EdgeX core services built are cloned from v3.1.1 (Napa build).
 
@@ -70,6 +70,34 @@ make kill-<service-name>
 // example:
 make kill-core-metadata
 ```
+
+### ⏳ View service status int two different ways:
+
+If you want the view the status of the serviecs to be printed out to bash then use below command:
+```bash
+~/edgex-foundry/edgex-native-build-3.1-napa$ make edgex-services-show-status
+USER         PID %CPU %MEM    VSZ   RSS   TTY      STAT START   TIME COMMAND
+mpunix     54400  0.9  3.7 1438420 145792 pts/3  Sl   11:47   0:45 consul agent -ui -bootstrap -server -client 127.0.0.1 -bind 127.0.0.1 -advertise 127.0.0.1 -data-dir=tmp/consul -log-level=trace
+mpunix     54410  0.0  0.6 1977516 23776 pts/3   Sl   11:47   0:01 ./core-metadata -cp=consul.http://127.0.0.1:8500 -registry -o
+mpunix     54415  0.0  0.6 2125452 23960 pts/3   Sl   11:47   0:03 ./core-data -cp=consul.http://127.0.0.1:8500 -registry -o
+mpunix     54420  0.0  0.6 2051068 25548 pts/3   Sl   11:47   0:01 ./core-command -cp=consul.http://127.0.0.1:8500 -registry -o
+mpunix     54425  0.0  0.7 2134156 29256 pts/3   Sl   11:47   0:01 ./support-notifications -cp=consul.http://127.0.0.1:8500 -registry -o
+mpunix     54430  0.0  0.7 2060080 29768 pts/3   Sl   11:47   0:04 ./support-scheduler -cp=consul.http://127.0.0.1:8500 -registry -o
+mpunix     54440  0.0  0.7 1246844 28564 pts/3   Sl   11:47   0:04 ./app-service-configurable -cp=consul.http://127.0.0.1:8500 -registry -p=rules-engine -o
+mpunix     54477  0.0  0.5 1242876 22520 pts/3   Sl   11:47   0:00 ./edgex-ui-server -o
+mpunix     54466  0.0  1.1 1947564 43540 pts/3   Sl   11:47   0:00 ./kuiperd
+mpunix     56483  0.0  0.7 1246888 28092 pts/3   Sl   11:54   0:03 ./device-virtual -cp=consul.http://127.0.0.1:8500 -registry -o
+```
+If you wish to view the service status from filtered htop view then use the below command:
+```bash
+~/edgex-foundry/edgex-native-build-3.1-napa$ make edgex-services-htop-status
+::: Filtering EdgeX services and displaying with htop :::
+>> you will be redirected to htop with filtered view of edgex services only
+```
+![image](https://github.com/user-attachments/assets/b8fbef57-6221-4727-a58f-f5b4a9d7e123)
+
+You can download `htop` from [here](https://htop.dev/downloads.html)
+
 ---
 ### 📜 Log Storage
 Logs for each service will be stored in their respective service folders within the `edgex-service-logs` directory, located in the root directory where this repository is cloned.
