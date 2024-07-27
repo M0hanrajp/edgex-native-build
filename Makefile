@@ -6,7 +6,7 @@
 # consul agent & executing environment variable export EDGEX_SECURITY_SECRET_STORE to false.
 # The configuration is set to false so that current config can run without security.
 start-consul-agent:
-	@nohup consul agent -ui -bootstrap -server -client 127.0.0.1 -bind 127.0.0.1 -advertise 127.0.0.1 -data-dir=tmp/consul > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-consul-agent/nohup.out 2>&1 &
+	@nohup consul agent -ui -bootstrap -server -client 127.0.0.1 -bind 127.0.0.1 -advertise 127.0.0.1 -data-dir=tmp/consul -log-level=trace > ~/edgex-foundry/edgex-native-build-3.1-napa/edgex-service-logs/edgex-consul-agent/nohup.out 2>&1 &
 	@echo "::: EdgeX consul-agent is running... :::"
 
 # This command forcefully kills consul, there is no information in edgex documentation on how to stop consul once we start it
@@ -177,7 +177,7 @@ edgex-services-stop:
 
 ####################################################
 # The below showcases services status, like PID etc.
-# ALl service status:
+# ALl service status is printed out to shell.
 #################################################### 
 edgex-services-show-status:
 	@echo "USER         PID %CPU %MEM    VSZ   RSS   TTY      STAT START   TIME COMMAND"
@@ -197,3 +197,10 @@ edgex-services-show-status:
 		echo "No EdgeX services are currently running."; \
 	fi; \
 	echo "$$status"
+#####################################################
+# The below showcases services status, like PID etc..
+# ALl service status is shown with htop filtered view
+#####################################################
+edgex-services-htop-status:
+	@echo "::: Filtering EdgeX services and displaying with htop :::"
+	@./htop-filter.sh
