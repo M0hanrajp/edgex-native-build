@@ -42,8 +42,24 @@ func SubscribeEvents(ctx context.Context, dic *di.Container) errors.EdgeX {
 	messageErrors := make(chan error)
 	// Retrieve the core data application instance from the DI container.
 	app := application.CoreDataAppFrom(dic.Get)
-	// Build the subscription topic using the base topic prefix and core-data event subscribe topic.
+
+	// common.BuildTopic: This function is likely defined in the common package. It takes two arguments and constructs a topic string.
 	subscribeTopic := common.BuildTopic(messageBusInfo.GetBaseTopicPrefix(), common.CoreDataEventSubscribeTopic)
+	// common.CoreDataEventSubscribeTopic
+	// common.CoreDataEventSubscribeTopic: This is probably a constant or variable that holds a specific topic string.
+	// Here the common.CoreDataEventSubscribeTopic is refereneced from github.com/edgexfoundry/go-mod-core-contracts/v3/common
+	// It's a constant, from go-mod-core-contracts/common/constants.go [CoreDataEventSubscribeTopic = "events/device/#"]
+
+	// messageBusInfo.GetBaseTopicPrefix()
+	// This function returns the prefix string of the subscribe topic
+	// GetBaseTopicPrefix is the method used to check if the string is empty or not
+	// function defined in https://github.com/edgexfoundry/go-mod-bootstrap/blob/bb9483251681910a33238bb0066b67494bd3f783/config/types.go#L280
+	// so return m.BaseTopicPrefix is what being returned from messageBusInfo.GetBaseTopicPrefix()
+	// if it's empty it will return DefaultBaseTopic from go-mod-core-contracts/common/constants.go
+	// When will this not be empty ?
+	// User needs to set baseTopicPrefix per https://docs.edgexfoundry.org/3.1/microservices/configuration/V3MigrationCommonConfig/#messagebus
+	// It's an environment variable, if empty then default topic will be returned/
+
 	// Added this variable to check subscribeTopic value
 	lc.Infof("SubscribeTopic: %s", subscribeTopic)
 	// Define the topics to subscribe to, with each topic associated with a channel for receiving messages.
