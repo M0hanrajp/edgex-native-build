@@ -2,9 +2,19 @@
 
 This repository is for building and running EdgeX on Linux natively, the current build is performed over Ubuntu 22.04 & all EdgeX core services built are cloned from v3.1.1 (Napa build).
 
-* Objective: Make EdgeX native build execution process convenient !
-    * This will be done through Makefile & will have similar functionalities to ease up execution process.
-    * will include commands for the user to enable and disable features based on their use case.
+* Objective: Create an end to end test environment which allows users to modify multiple services and test with Makefile i.e. Similar to docker-compose but here you can: 
+  * Change the code of any service.
+  * Change the configuration.yaml/configuration.toml of any service.
+  * Build the service and through Makefile execute the scenario.
+    * Note: When you want to modify an EdgeX service please clone it to your desired directory and      change the paths mentioned in Makefile to your cloned path.
+  * Run the services.
+  * will include commands for the user to enable and disable features based on their use case.
+  * Not necessary that you need to edit all the service but you are allowed to.
+
+If still you prefer a docker compose environment then please refer: [Working in a Hybrid Environment
+](https://docs.edgexfoundry.org/3.1/getting-started/Ch-GettingStartedHybrid/)
+
+Please note that if your tasks requires you to edit multiple code and build and execute them simultaneously then please follow through the below info:
 
 ---
 ## EdgeX Foundry Services Management
