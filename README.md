@@ -1,3 +1,5 @@
+# EdgeX native build on Linux x86/x64
+
 ### Objective
 
 Create an end-to-end test environment that allows users to modify multiple services and test them using a Makefile. 
@@ -21,9 +23,6 @@ This setup is similar to Docker Compose but offers additional flexibility:
 If your tasks require you to edit multiple codes, build, and execute them simultaneously, please follow the instructions below.
 
 ---
-## EdgeX Foundry Services Management
-
-This Makefile provides a set of commands to manage various EdgeX Foundry services. It includes commands to start and stop services such as Consul, core services, support services, and more.
 
 ### Prerequisites
 
