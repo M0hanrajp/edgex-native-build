@@ -27,6 +27,7 @@ If your tasks require you to edit multiple codes, build, and execute them simult
 ### Prerequisites
 
 - Make sure the host machine as all [Required software](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#required-software) & [Prepare your environment](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#prepare-your-environment) environment variables are set.
+- Please `cd` to each edgex service folder and execute `make build` command & make sure all builds are completed.
 
 ### Directory Path
 
