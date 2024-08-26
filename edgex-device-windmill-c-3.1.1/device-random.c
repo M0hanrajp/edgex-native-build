@@ -8,11 +8,18 @@
 
 #include "devsdk/devsdk.h"
 
-#include <unistd.h>
-#include <signal.h>
-#include <stdarg.h>
+#include <unistd.h>  // Provides access to the POSIX operating system API, including system calls for file operations (read, write, close), process control (fork, exec), and other essential functions for Unix-like systems[^1^][4].
+#include <signal.h>  // Defines macros and functions for handling signals, which are used to report exceptional conditions or asynchronous events (e.g., SIGINT for interrupt signal, SIGTERM for termination request)[^2^][1][^3^][2].
+#include <stdarg.h>  // Allows functions to accept an indefinite number of arguments. It provides macros for accessing the arguments passed to variadic functions (e.g., va_start, va_arg, va_end)[^4^][8][^5^][11].
 
 #define ERR_CHECK(x) if (x.code) { fprintf (stderr, "Error: %d: %s\n", x.code, x.reason); devsdk_service_free (service); free (impl); return x.code; }
+/* The #define directive defines a macro named ERR_CHECK that takes one argument x.
+ * If statement checks if the code member of the x structure is non-zero (indicating an error)
+ * fprintf (stderr, "Error: %d: %s\n", x.code, x.reason) -> This function prints an error message to the standard error stream (stderr), 
+ * x.code & x.reason are from x structure & all errors are defined in device-sdk-c/src/c/errorlist.h
+ * devsdk_service_free (service) -> This function disposes of the device service object and all associated resources, https://docs.edgexfoundry.org/3.1/microservices/device/sdk/api/CDeviceSDK/CDeviceSDKAPI/#devsdk_service_free
+ * frees the memory allocated for the impl object
+ */
 
 typedef enum { RANDOM_R100, RANDOM_R1000, RANDOM_SW } random_resourcetype;
 
