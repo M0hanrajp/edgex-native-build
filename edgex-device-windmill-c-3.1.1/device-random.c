@@ -188,7 +188,7 @@ int main (int argc, char *argv[])
 
   /* Initalise a new device service */
   devsdk_service_t *service = devsdk_service_new
-    ("device-random", "1.0", impl, randomImpls, &argc, argv, &e);
+    ("device-Windmill", "1.0", impl, randomImpls, &argc, argv, &e);
   ERR_CHECK (e);
 
   int n = 1;
