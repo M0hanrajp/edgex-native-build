@@ -8,12 +8,13 @@
 
 #include "devsdk/devsdk.h"
 
-#include <unistd.h>  // Provides access to the POSIX operating system API, including system calls for file operations (read, write, close), process control (fork, exec), and other essential functions for Unix-like systems[^1^][4].
-#include <signal.h>  // Defines macros and functions for handling signals, which are used to report exceptional conditions or asynchronous events (e.g., SIGINT for interrupt signal, SIGTERM for termination request)[^2^][1][^3^][2].
-#include <stdarg.h>  // Allows functions to accept an indefinite number of arguments. It provides macros for accessing the arguments passed to variadic functions (e.g., va_start, va_arg, va_end)[^4^][8][^5^][11].
+#include <unistd.h>  // Provides access to the POSIX operating system API, including system calls for file operations (read, write, close), process control (fork, exec), and other essential functions for Unix-like systems.
+#include <signal.h>  // Defines macros and functions for handling signals, which are used to report exceptional conditions or asynchronous events (e.g., SIGINT for interrupt signal, SIGTERM for termination request).
+#include <stdarg.h>  // Allows functions to accept an indefinite number of arguments. It provides macros for accessing the arguments passed to variadic functions (e.g., va_start, va_arg, va_end)
 
 #define ERR_CHECK(x) if (x.code) { fprintf (stderr, "Error: %d: %s\n", x.code, x.reason); devsdk_service_free (service); free (impl); return x.code; }
 /* The #define directive defines a macro named ERR_CHECK that takes one argument x.
+ * x is a placeholder. It doesn't represent a specific variable or value within the macro definition itself. Instead, it will be replaced by whatever argument you pass to the macro when you use it.
  * If statement checks if the code member of the x structure is non-zero (indicating an error)
  * fprintf (stderr, "Error: %d: %s\n", x.code, x.reason) -> This function prints an error message to the standard error stream (stderr), 
  * x.code & x.reason are from x structure & all errors are defined in device-sdk-c/src/c/errorlist.h
@@ -22,20 +23,23 @@
  */
 
 typedef enum { RANDOM_R100, RANDOM_R1000, RANDOM_SW } random_resourcetype;
+/* random_resourcetype enum can take on the values 0, 1, or 2  */
 
 typedef struct random_driver
 {
-  iot_logger_t * lc;
-  bool state_flag;
+  iot_logger_t *lc;
+  bool state_flag; 
   pthread_mutex_t mutex;
 } random_driver;
+/* iot_logger_t logging purpose
+ * state_flag boolean variable that can hold true or false
+ * mutex: This is a mutex (mutual exclusion) variable used for thread synchronization. 
+ * It is used to ensure that only one thread can access or modify the state_flag at a time. 
+ * This is crucial in a multi-threaded environment to prevent race conditions and ensure data consistency.
+ * based on the current infomration this custom data type holds, information(logging) & state (bool)
+ */
 
-static bool random_init
-(
-  void *impl,
-  struct iot_logger_t *lc,
-  const iot_data_t *config
-)
+static bool random_init( void *impl, struct iot_logger_t *lc, const iot_data_t *config )
 {
   random_driver *driver = (random_driver *) impl;
   driver->lc = lc;
@@ -44,6 +48,18 @@ static bool random_init
   iot_log_debug(driver->lc,"Init");
   return true;
 }
+/* The function parameters are used from devsdk_initialize, https://docs.edgexfoundry.org/3.1/microservices/device/sdk/api/CDeviceSDK/CDeviceSDKAPI/#devsdk_initialize
+ * Purpose is to supply the implementaiton with logger and configuration.
+ * if funciton returns true then service initialized is success.
+ * - impl > points to a random_driver structure, driver variable will point to the same memory location as impl
+ * lc parameter in random_init function is used to inititalize the lc field in the random_driver structure.
+ * This way, the random_driver has access to the logger for logging purposes, the init message is one specific use case.
+ * set the state_flag field within the random_driver structure to false.
+ * pthread_mutex_init: This is a function from the POSIX threads (pthreads) library used to initialize a mutex.
+ * &driver->mutex: This is the address of the mutex field within the random_driver structure. 
+ * The & symbol is used to get the address of the mutex.
+ * NULL: This is an optional attribute parameter. Passing NULL means that the default mutex attributes are used.
+ */
 
 static bool random_get_handler
 (
