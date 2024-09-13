@@ -60,7 +60,6 @@ static bool random_init( void *impl, struct iot_logger_t *lc, const iot_data_t *
  * The & symbol is used to get the address of the mutex.
  * NULL: This is an optional attribute parameter. Passing NULL means that the default mutex attributes are used.
  */
-
 static bool random_get_handler
 (
   void *impl,
@@ -96,7 +95,6 @@ static bool random_get_handler
   }
   return true;
 }
-
 static bool random_put_handler
 (
   void *impl,
@@ -109,7 +107,6 @@ static bool random_put_handler
 )
 {
   random_driver *driver = (random_driver *) impl;
-
   for (uint32_t i = 0; i < nvalues; i++)
   {
     if (*(random_resourcetype *)requests[i].resource->attrs == RANDOM_SW)
