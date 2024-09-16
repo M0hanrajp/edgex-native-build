@@ -1,0 +1,49 @@
+Writable:
+  LogLevel: "TRACE"
+  StoreAndForward:
+    Enabled: false
+    
+  Pipeline:
+    TargetType: "event" # should be event
+    ExecutionOrder: "ToLineProtocol, Batch, HTTPExport"
+
+    Functions:
+      ToLineProtocol:
+        Parameters:
+          Tags: "" # optional comma separated list of additional tags to add to the metric in to form "tag:value,..."
+      Batch:
+        Parameters:
+          Mode: "bytimecount" # can be "bycount", "bytime" or "bytimecount"
+          BatchThreshold: "100"
+          TimeInterval: "5s"
+          MergeOnSend: "true"
+      HTTPExport:
+        Parameters:
+          Method: "post"
+          MimeType: "raw"
+          Url: "http:/edgex-influxdb:8086/api/v2/write?org=qcom&bucket=edgex&precision=ns"
+          HeaderName: "authorization" # Name of the header key to add to the HTTP header
+          SecretValueKey: "token" # Name of the secret for the header value in the SecretStore
+          SecretName: "influxdb" # Path to the secret for the header value in the SecretStore
+
+  InsecureSecrets:
+    influxdb:
+      SecretName: "influxdb"
+      SecretData:
+        token: "Token <place InfluxDB token here>"
+
+  Telemetry:
+    Interval: "0s" # Don't report any metrics as that would be cyclic with this profiles' processing.
+
+Service:
+  Host: "localhost"
+  Port: 59708
+  StartupMsg: "app-events-influxdb has Started"
+
+MessageBus:
+  Optional:
+    ClientId: "app-events-influxdb"
+
+Trigger:
+  # Note that the MessageBus connection above is used by edgex-messagebus trigger which is the default set in common config
+  SubscribeTopics: "events/#" # Base topic is prepened to this topic when using edgex-messagebus
