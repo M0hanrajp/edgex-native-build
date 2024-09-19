@@ -32,7 +32,6 @@ type MetricsProcessor struct {
 // NewMetricsProcessor creates a new MetricsProcessor with additional tags to add to the Metrics that are processed
 func NewMetricsProcessor(additionalTags map[string]interface{}) (*MetricsProcessor, error) {
 	mp := &MetricsProcessor{}
-
 	for name, value := range additionalTags {
 		if err := dtos.ValidateMetricName(name, "Tag"); err != nil {
 			return nil, err
@@ -48,14 +47,15 @@ func NewMetricsProcessor(additionalTags map[string]interface{}) (*MetricsProcess
 // For more information on Line Protocol see: https://docs.influxdata.com/influxdb/v2.0/reference/syntax/line-protocol/
 func (mp *MetricsProcessor) ToLineProtocol(ctx interfaces.AppFunctionContext, data interface{}) (bool, interface{}) {
 	lc := ctx.LoggingClient()
+	lc.Debugf("Inside func MetricsProcessor - ToLineProtocol from app-functions/v3/pkg/transforms/metrics.go")
 	lc.Debugf("ToLineProtocol called in pipeline '%s'", ctx.PipelineId())
-
 	if data == nil {
 		// Go here for details on Error Handle: https://docs.edgexfoundry.org/1.3/microservices/application/ErrorHandling/
 		return false, fmt.Errorf("function ToLineProtocol in pipeline '%s': No Data Received", ctx.PipelineId())
 	}
 
 	metric, ok := data.(dtos.Metric)
+	lc.Debugf("The value of metric: %v", metric)
 	if !ok {
 		return false, fmt.Errorf("function ToLineProtocol in pipeline '%s', type received is not an Metric", ctx.PipelineId())
 	}
@@ -65,8 +65,10 @@ func (mp *MetricsProcessor) ToLineProtocol(ctx interfaces.AppFunctionContext, da
 	}
 
 	// New line is needed if the resulting metric data is batched and sent in chunks to service like InfluxDB
+	// ToLineProtocol is defined in https://github.com/edgexfoundry/go-mod-core-contracts/blob/main/dtos/metric.go
+	// fmt.Sprintln adds a new line at the end of the string
 	result := fmt.Sprintln(metric.ToLineProtocol())
-
+	lc.Debugf("The value of metric.ToLineProtocol: %v", metric.ToLineProtocol())
 	lc.Debugf("Transformed Metric to '%s' in pipeline '%s", result, ctx.PipelineId())
 
 	return true, result
