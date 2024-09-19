@@ -167,7 +167,7 @@ func (trigger *Trigger) messageHandler(logger logger.LoggingClient, _ types.Topi
 		message.ReceivedTopic,
 		message.ContentType)
 	logger.Tracef("MessageBus Trigger: Received message with %s=%s", common.CorrelationHeader, message.CorrelationID)
-
+	logger.Debugf("MessageBus Trigger: Payload of messageEnvelope: %v", string(message.Payload))
 	appContext := trigger.serviceBinding.BuildContext(message)
 
 	go func() {
