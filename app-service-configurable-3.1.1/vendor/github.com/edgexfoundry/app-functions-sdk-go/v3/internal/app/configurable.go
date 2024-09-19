@@ -828,13 +828,15 @@ func (app *Configurable) processHttpExportParameters(
 
 // ToLineProtocol transforms the Metric DTO passed to the transform to a string conforming to Line Protocol syntax.
 // This function is a configuration function and returns a function pointer.
+// after execution ToLineProtocol will be added to the app service which we have configured
 func (app *Configurable) ToLineProtocol(parameters map[string]string) interfaces.AppFunction {
 	tags, failed := app.processTagsParameter(parameters)
 	if failed {
 		return nil
 	}
-
+	// Being called from app-functions-sdk/v3/pkg/transforms - metric.go
 	mp, err := transforms.NewMetricsProcessor(tags)
+	app.lc.Debugf("Inside the ToLineProtocol configuration at app-functions/v3/internal/app/configurable.go")
 	if err != nil {
 		app.lc.Errorf("unable to configure ToLineProtocol function: %s", err.Error())
 		return nil
