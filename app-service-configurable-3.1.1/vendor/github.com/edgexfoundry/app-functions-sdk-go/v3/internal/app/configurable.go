@@ -832,9 +832,10 @@ func (app *Configurable) processHttpExportParameters(
 func (app *Configurable) ToLineProtocol(parameters map[string]string) interfaces.AppFunction {
 	tags, failed := app.processTagsParameter(parameters)
 	if failed {
+		fmt.Println("Tags not used ", tags)
 		return nil
 	}
-	// Being called from app-functions-sdk/v3/pkg/transforms - metric.go
+	// Being called from app-functions-sdk/v3/pkg/transforms - metrics.go
 	mp, err := transforms.NewMetricsProcessor(tags)
 	app.lc.Debugf("Inside the ToLineProtocol configuration at app-functions/v3/internal/app/configurable.go")
 	if err != nil {
@@ -843,4 +844,24 @@ func (app *Configurable) ToLineProtocol(parameters map[string]string) interfaces
 	}
 
 	return mp.ToLineProtocol
+}
+
+// For event data converstion
+func (app *Configurable) ToEventLineProtocol(parameters map[string]string) interfaces.AppFunction {
+
+	//TODO: Implement the Event tags feature for better support
+
+	// tags, failed := app.processTagsParameter(parameters)
+	// if failed {
+	// 	return nil
+	// }
+	// Being called from app-functions-sdk/v3/pkg/transforms - metrics.go
+	mp, err := transforms.NewEventProcessor(nil)
+	app.lc.Debugf("Inside the ToEventLineProtocol configuration at app-functions/v3/internal/app/configurable.go")
+	if err != nil {
+		app.lc.Errorf("unable to configure ToLineProtocol function: %s", err.Error())
+		return nil
+	}
+
+	return mp.ToEventLineProtocol
 }
