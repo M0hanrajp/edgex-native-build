@@ -2,13 +2,18 @@ Writable:
   LogLevel: "TRACE"
   StoreAndForward:
     Enabled: false
-    
+  # The Pipeline section allows the functions pipeline to be specified via configuration
   Pipeline:
-    TargetType: "event" # should be event
-    ExecutionOrder: "ToLineProtocol, Batch, HTTPExport"
+    # If set, must be one of the three values: raw, metric, event.
+    # If not set it defaults to event
+    # The app takes in event data and converts them to line protocol format
+    TargetType: "event" 
+    # ToEventLineProtocol is the custom function that converts Events to line protocol format
+    ExecutionOrder: "ToEventLineProtocol, Batch, HTTPExport"
 
+    # Pipeline functions parameters, tags and configurations
     Functions:
-      ToLineProtocol:
+      ToEventLineProtocol:
         Parameters:
           Tags: "" # optional comma separated list of additional tags to add to the metric in to form "tag:value,..."
       Batch:
@@ -21,7 +26,7 @@ Writable:
         Parameters:
           Method: "post"
           MimeType: "raw"
-          Url: "http:/edgex-influxdb:8086/api/v2/write?org=qcom&bucket=edgex&precision=ns"
+          Url: "http://localhost:8086/api/v2/write?org=qcom&bucket=edgex&precision=ns"
           HeaderName: "authorization" # Name of the header key to add to the HTTP header
           SecretValueKey: "token" # Name of the secret for the header value in the SecretStore
           SecretName: "influxdb" # Path to the secret for the header value in the SecretStore
