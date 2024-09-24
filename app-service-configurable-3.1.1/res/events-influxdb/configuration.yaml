@@ -9,9 +9,29 @@ Writable:
     # The app takes in event data and converts them to line protocol format
     TargetType: "event" 
     # ToEventLineProtocol is the custom function that converts Events to line protocol format
+    # ExecutionOrder specifies which functions to run and the order to run them.
+    # All functions listed must have an entry below in the Pipeline.Functions section
     ExecutionOrder: "ToEventLineProtocol, Batch, HTTPExport"
+    # Pipeline.PerTopicPipelines sections allow for multiple pipeline to be defined to get executed when the specified
+    # Topic match the incoming topic. The Id must be unique, but the Topic does not.
+    # See https://docs.edgexfoundry.org/2.1/microservices/application/AppServiceConfigurable/#pipeline-per-topic
+    # for complete details on Pipeline Per Topic.
+    # PerTopicPipelines:
+    #   float:
+    #     Id: "float-pipeline"
+    #     Topics: "events/device/device-virtual/Random-Float-Device/#"
+    #     ExecutionOrder: "TransformJson, SetResponseData"
+    #   int8-16:
+    #     Id: "int8-16-pipeline"
+    #     Topics: "events/device/device-virtual/+/+/Int8, events/device/device-virtual/+/+/Int16"
+    #     ExecutionOrder: "TransformXml, SetResponseData"
 
-    # Pipeline functions parameters, tags and configurations
+    # The Functions sections define the parameter configuration for each specific function.
+    # These function names must match a function defined in the configurable package of the SDK.
+    # See the Built-In Transforms/Functions section of the SDK"s README for complete list.
+    # Some functions do not require any parameters, but still must be listed.
+    # Also, functions not specified in ExecutionOrder above can still be included which allows for easier
+    # dynamic changes from Consul.
     Functions:
       ToEventLineProtocol:
         Parameters:
@@ -24,13 +44,14 @@ Writable:
           MergeOnSend: "true"
       HTTPExport:
         Parameters:
-          Method: "post"
-          MimeType: "raw"
-          Url: "http://localhost:8086/api/v2/write?org=qcom&bucket=edgex&precision=ns"
+          Method: "post" # can be "post" or "put"
+          MimeType: "raw" #OPTIONAL - defaults to "application/json" if not set
+          Url: "http://localhost:8086/api/v2/write?org=qcom&bucket=edgex&precision=ns" # Url can have place holders in the form "{key-name}" that are replaced with matching Context values. Error occurs if no value match place holder(s).
           HeaderName: "authorization" # Name of the header key to add to the HTTP header
           SecretValueKey: "token" # Name of the secret for the header value in the SecretStore
           SecretName: "influxdb" # Path to the secret for the header value in the SecretStore
 
+# InsecureSecrets are required for  authenticated HTTP exports, MQTT exports and AES  when not using security services, i.e. Vault
   InsecureSecrets:
     influxdb:
       SecretName: "influxdb"
@@ -46,9 +67,11 @@ Service:
   StartupMsg: "app-events-influxdb has Started"
 
 MessageBus:
+  # Disabled: false # Set to true if not using edgex-messagebus Trigger below and don't want Metrics
   Optional:
     ClientId: "app-events-influxdb"
 
 Trigger:
   # Note that the MessageBus connection above is used by edgex-messagebus trigger which is the default set in common config
+  # Default value for SubscribeTopics is aslo set in common config
   SubscribeTopics: "events/#" # Base topic is prepened to this topic when using edgex-messagebus
