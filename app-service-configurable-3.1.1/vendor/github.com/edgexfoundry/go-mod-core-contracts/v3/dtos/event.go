@@ -7,6 +7,8 @@ package dtos
 
 import (
 	"encoding/xml"
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/edgexfoundry/go-mod-core-contracts/v3/dtos/common"
@@ -90,4 +92,47 @@ func (e *Event) ToXML() (string, error) {
 	}
 
 	return string(eventXml), nil
+}
+
+// Implementation of ToEventLineProtocol
+func (e *Event) ToEventLineProtocol() string {
+	// Initialize builders for tags and fields
+	var tags strings.Builder
+	var fields strings.Builder
+	isFirst := true
+
+	// Add deviceName as a tag
+	// tags.WriteString(",deviceName=" + e.DeviceName)
+
+	// Optionally add profileName as a tag
+	tags.WriteString(",profileName=" + e.ProfileName)
+
+	// Iterate over readings to build fields section
+	for _, reading := range e.Readings {
+		if isFirst {
+			isFirst = false
+		} else {
+			fields.WriteString(",")
+		}
+		// Field key is the resourceName, field value is the reading value
+		fields.WriteString(reading.ResourceName + "=" + formatLineProtocolEventValue(reading.Value))
+	}
+
+	// Build the final line protocol
+	result := fmt.Sprintf("%s%s %s %d", e.DeviceName, tags.String(), fields.String(), e.Origin)
+	return result
+}
+
+// Helper function
+func formatLineProtocolEventValue(value interface{}) string {
+	switch value.(type) {
+	case string:
+		return fmt.Sprintf("%s", value)
+	case int, int8, int16, int32, int64:
+		return fmt.Sprintf("%di", value)
+	case uint, uint8, uint16, uint32, uint64:
+		return fmt.Sprintf("%du", value)
+	default:
+		return fmt.Sprintf("%v", value)
+	}
 }
