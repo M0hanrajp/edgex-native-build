@@ -94,8 +94,10 @@ func (e *Event) ToXML() (string, error) {
 	return string(eventXml), nil
 }
 
-// Implementation of ToEventLineProtocol
-func (e *Event) ToEventLineProtocol() string {
+// The following code contains Implementation of ToEventLineProtocol
+// the code is written with reference of ToLineProtocol for converting metric data to Line protocol format
+// the below code is written with the same apporach but to take in an Event DTO and convert to line protocol format
+func (event *Event) ToEventLineProtocol() string {
 	// Initialize builders for tags and fields
 	var tags strings.Builder
 	var fields strings.Builder
@@ -105,10 +107,10 @@ func (e *Event) ToEventLineProtocol() string {
 	// tags.WriteString(",deviceName=" + e.DeviceName)
 
 	// Optionally add profileName as a tag
-	tags.WriteString(",profileName=" + e.ProfileName)
+	tags.WriteString(",profileName=" + event.ProfileName)
 
 	// Iterate over readings to build fields section
-	for _, reading := range e.Readings {
+	for _, reading := range event.Readings {
 		if isFirst {
 			isFirst = false
 		} else {
@@ -119,20 +121,24 @@ func (e *Event) ToEventLineProtocol() string {
 	}
 
 	// Build the final line protocol
-	result := fmt.Sprintf("%s%s %s %d", e.DeviceName, tags.String(), fields.String(), e.Origin)
+	result := fmt.Sprintf("%s%s %s %d", event.DeviceName, tags.String(), fields.String(), event.Origin)
 	return result
 }
 
 // Helper function
 func formatLineProtocolEventValue(value interface{}) string {
-	switch value.(type) {
+	switch v := value.(type) {
 	case string:
-		return fmt.Sprintf("%s", value)
+		return fmt.Sprintf("%s", v)
 	case int, int8, int16, int32, int64:
-		return fmt.Sprintf("%di", value)
+		return fmt.Sprintf("%di", v) // integer values are suffixed with 'i'
 	case uint, uint8, uint16, uint32, uint64:
-		return fmt.Sprintf("%du", value)
+		return fmt.Sprintf("%du", v) // unsigned integers
+	case float32, float64:
+		return fmt.Sprintf("%f", v) // floats do not need suffixes
+	case bool:
+		return fmt.Sprintf("%t", v) // booleans are stored as true/false
 	default:
-		return fmt.Sprintf("%v", value)
+		return fmt.Sprintf("%v", v) // fallback case
 	}
 }
