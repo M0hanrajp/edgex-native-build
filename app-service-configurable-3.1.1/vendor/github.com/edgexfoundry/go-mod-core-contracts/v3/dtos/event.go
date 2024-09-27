@@ -97,6 +97,11 @@ func (e *Event) ToXML() (string, error) {
 // The following code contains Implementation of ToEventLineProtocol
 // the code is written with reference of ToLineProtocol for converting metric data to Line protocol format
 // the below code is written with the same apporach but to take in an Event DTO and convert to line protocol format
+// ## Line Protocol Syntax:
+// <measurement>[,<tag_key>=<tag_value>[,<tag_key>=<tag_value>]] <field_key>=<field_value>[,<field_key>=<field_value>] [<timestamp>]
+// Examples:
+// myMeasurement,tag1=value1,tag2=value2 fieldKey="fieldValue" 1556813561098000000
+// More info related to line protocol https://docs.influxdata.com/influxdb/v2/reference/syntax/line-protocol/
 func (event *Event) ToEventLineProtocol() string {
 	// Initialize builders for tags and fields
 	var tags strings.Builder
