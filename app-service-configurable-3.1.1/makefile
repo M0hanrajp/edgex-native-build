@@ -11,7 +11,7 @@ SDKVERSION=$(shell cat ./go.mod | grep 'github.com/edgexfoundry/app-functions-sd
 MICROSERVICE=app-service-configurable
 GOFLAGS=-ldflags "-X github.com/edgexfoundry/app-functions-sdk-go/v3/internal.SDKVersion=$(SDKVERSION) \
                    -X github.com/edgexfoundry/app-functions-sdk-go/v3/internal.ApplicationVersion=$(APPVERSION)" \
-                   -trimpath -mod=readonly
+                   -trimpath -mod=vendor
 GOTESTFLAGS?=-race
 
 GIT_SHA=$(shell git rev-parse HEAD)
