@@ -21,7 +21,7 @@ Writable:
         Parameters:
           Method: "post"
           MimeType: "raw"
-          Url: "http:/edgex-influxdb:8086/api/v2/write?org=qcom&bucket=edgex&precision=ns"
+          Url: "http://localhost:8086/api/v2/write?org=qcom&bucket=edgex&precision=ns"
           HeaderName: "authorization" # Name of the header key to add to the HTTP header
           SecretValueKey: "token" # Name of the secret for the header value in the SecretStore
           SecretName: "influxdb" # Path to the secret for the header value in the SecretStore
