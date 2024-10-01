@@ -8,6 +8,7 @@ package dtos
 import (
 	"encoding/xml"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -97,7 +98,7 @@ func (e *Event) ToXML() (string, error) {
 // The following code contains Implementation of ToEventLineProtocol
 // the code is written with reference of ToLineProtocol for converting metric data to Line protocol format
 // the below code is written with the same apporach but to take in an Event DTO and convert to line protocol format
-// ## Line Protocol Syntax:
+// Line Protocol Syntax:
 // <measurement>[,<tag_key>=<tag_value>[,<tag_key>=<tag_value>]] <field_key>=<field_value>[,<field_key>=<field_value>] [<timestamp>]
 // Examples:
 // myMeasurement,tag1=value1,tag2=value2 fieldKey="fieldValue" 1556813561098000000
@@ -122,28 +123,72 @@ func (event *Event) ToEventLineProtocol() string {
 			fields.WriteString(",")
 		}
 		// Field key is the resourceName, field value is the reading value
-		fields.WriteString(reading.ResourceName + "=" + formatLineProtocolEventValue(reading.Value))
+		fields.WriteString(reading.ResourceName + "=" + formatLineProtocolEventValue(reading.ValueType, reading.Value))
 	}
-
 	// Build the final line protocol
 	result := fmt.Sprintf("%s%s %s %d", event.DeviceName, tags.String(), fields.String(), event.Origin)
 	return result
 }
 
 // Helper function
-func formatLineProtocolEventValue(value interface{}) string {
-	switch v := value.(type) {
-	case string:
-		return fmt.Sprintf("%s", v)
-	case int, int8, int16, int32, int64:
-		return fmt.Sprintf("%di", v) // integer values are suffixed with 'i'
-	case uint, uint8, uint16, uint32, uint64:
-		return fmt.Sprintf("%du", v) // unsigned integers
-	case float32, float64:
-		return fmt.Sprintf("%f", v) // floats do not need suffixes
-	case bool:
-		return fmt.Sprintf("%t", v) // booleans are stored as true/false
+func formatLineProtocolEventValue(valueType string, value string) string {
+	switch valueType {
+
+	// Enclose strings in quotes
+	case "String":
+		return fmt.Sprintf("\"%s\"", value)
+
+	// Integer data type, append i at the end
+	case "Int8", "Int16", "Int32", "Int64", "Int":
+		intValue, err := strconv.ParseInt(value, 10, 64)
+		if err != nil {
+			return fmt.Sprintf("\"%s\"", value)
+		}
+		return fmt.Sprintf("%di", intValue)
+
+	// unsigned-Integer data type, append U at the end
+	case "Uint8", "Uint16", "Uint32", "Uint64", "Uint":
+		uintValue, err := strconv.ParseUint(value, 10, 64)
+		if err != nil {
+			return fmt.Sprintf("\"%s\"", value)
+		}
+		return fmt.Sprintf("%du", uintValue)
+
+	// Float data type
+	case "Float32", "Float64":
+		floatValue, err := strconv.ParseFloat(value, 64)
+		if err != nil {
+			return fmt.Sprintf("\"%s\"", value)
+		}
+		return fmt.Sprintf("%f", floatValue)
+
+	// Boolean data type
+	case "Bool":
+		boolValue, err := strconv.ParseBool(value)
+		if err != nil {
+			return fmt.Sprintf("\"%s\"", value)
+		}
+		return fmt.Sprintf("%t", boolValue)
+
 	default:
-		return fmt.Sprintf("%v", v) // fallback case
+		return fmt.Sprintf("\"%s\"", value)
 	}
 }
+
+// Old helper function where string does not work
+//	func formatLineProtocolEventValue(value interface{}) string {
+//		switch v := value.(type) {
+//		case string:
+//			return fmt.Sprintf("\"%s\"", v)
+//		case int, int8, int16, int32, int64:
+//			return fmt.Sprintf("%di", v) // integer values are suffixed with 'i'
+//		case uint, uint8, uint16, uint32, uint64:
+//			return fmt.Sprintf("%du", v) // unsigned integers
+//		case float32, float64:
+//			return fmt.Sprintf("%f", v) // floats do not need suffixes
+//		case bool:
+//			return fmt.Sprintf("%t", v) // booleans are stored as true/false
+//		default:
+//			return fmt.Sprintf("%v", v) // fallback case
+//		}
+//	}
