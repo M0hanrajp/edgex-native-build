@@ -2,6 +2,7 @@ Writable:
   LogLevel: "TRACE"
   StoreAndForward:
     Enabled: false
+
   # The Pipeline section allows the functions pipeline to be specified via configuration
   Pipeline:
     # If set, must be one of the three values: raw, metric, event.
@@ -39,8 +40,8 @@ Writable:
       Batch:
         Parameters:
           Mode: "bytimecount" # can be "bycount", "bytime" or "bytimecount"
-          BatchThreshold: "100"
-          TimeInterval: "5s"
+          BatchThreshold: "10"
+          TimeInterval: "2s"
           MergeOnSend: "true"
       HTTPExport:
         Parameters:
@@ -58,8 +59,9 @@ Writable:
       SecretData:
         token: "Token <place InfluxDB token here>"
 
+# Don't report any metrics as that would be cyclic with this profiles' processing.
   Telemetry:
-    Interval: "0s" # Don't report any metrics as that would be cyclic with this profiles' processing.
+    Interval: "0s"
 
 Service:
   Host: "localhost"
@@ -67,7 +69,7 @@ Service:
   StartupMsg: "app-events-influxdb has Started"
 
 MessageBus:
-  # Disabled: false # Set to true if not using edgex-messagebus Trigger below and don't want Metrics
+  Disabled: false # Set to true if not using edgex-messagebus Trigger below and don't want Metrics
   Optional:
     ClientId: "app-events-influxdb"
 
