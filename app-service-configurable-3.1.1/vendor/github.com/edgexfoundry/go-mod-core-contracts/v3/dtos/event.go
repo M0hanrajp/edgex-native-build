@@ -171,7 +171,7 @@ func formatLineProtocolEventValue(valueType string, value string) string {
 		return fmt.Sprintf("%t", boolValue)
 
 	default:
-		return fmt.Sprintf("\"%s\"", value)
+		return fmt.Sprintf("\"Data type not supported!%s\"", value)
 	}
 }
 
