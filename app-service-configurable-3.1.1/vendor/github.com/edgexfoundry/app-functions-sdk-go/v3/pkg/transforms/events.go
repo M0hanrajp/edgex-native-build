@@ -38,13 +38,13 @@ func (ep *EventProcessor) ToEventLineProtocol(ctx interfaces.AppFunctionContext,
 	}
 
 	event, ok := data.(dtos.Event)
-	lc.Debugf("The value of event: %v", event)
+	// lc.Debugf("The value of event: %v", event)
 	if !ok {
 		return false, fmt.Errorf("function ToEventLineProtocol in pipeline '%s', type received is not an Event", ctx.PipelineId())
 	}
 	// Convert the event to Line Protocol format
 	result := fmt.Sprintln(event.ToEventLineProtocol())
-	lc.Debugf("The value of event.ToEventLineProtocol: %v", event.ToEventLineProtocol())
+	// lc.Debugf("The value of event.ToEventLineProtocol: %v", event.ToEventLineProtocol())
 	lc.Debugf("Transformed Event to '%s' in pipeline '%s'", result, ctx.PipelineId())
 
 	return true, result
