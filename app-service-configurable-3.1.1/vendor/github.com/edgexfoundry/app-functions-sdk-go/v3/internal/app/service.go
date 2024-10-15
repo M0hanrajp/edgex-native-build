@@ -297,10 +297,10 @@ func (svc *Service) LoadConfigurableFunctionPipelines() (map[string]interfaces.F
 
 	configurable := reflect.ValueOf(NewConfigurable(svc.lc))
 	pipelineConfig := svc.config.Writable.Pipeline
-	svc.lc.Debugf("Value of pipelineConfig = %+v", pipelineConfig)
+	// svc.lc.Debugf("Value of pipelineConfig = %+v", pipelineConfig)
 
 	defaultExecutionOrder := strings.TrimSpace(pipelineConfig.ExecutionOrder)
-	svc.lc.Debugf("Value of defaultExecutionOrder = %+v", defaultExecutionOrder)
+	// svc.lc.Debugf("Value of defaultExecutionOrder = %+v", defaultExecutionOrder)
 
 	if len(defaultExecutionOrder) == 0 && len(pipelineConfig.PerTopicPipelines) == 0 {
 		return nil, errors.New("default ExecutionOrder has 0 functions specified and PerTopicPipelines is empty")
@@ -310,10 +310,10 @@ func (svc *Service) LoadConfigurableFunctionPipelines() (map[string]interfaces.F
 		svc.lc.Debugf("Default Function Pipeline Execution Order: [%s]", pipelineConfig.ExecutionOrder)
 		functionNames := util.DeleteEmptyAndTrim(strings.FieldsFunc(defaultExecutionOrder, util.SplitComma))
 
-		svc.lc.Debugf("What is functionNames:: [%s]", functionNames)
+		// svc.lc.Debugf("What is functionNames:: [%s]", functionNames)
 
 		transforms, err := svc.loadConfigurablePipelineTransforms(interfaces.DefaultPipelineId, functionNames, pipelineConfig.Functions, configurable)
-		svc.lc.Debugf("What is transforms = %v", transforms)
+		// svc.lc.Debugf("What is transforms = %v", transforms)
 		if err != nil {
 			return nil, err
 		}
