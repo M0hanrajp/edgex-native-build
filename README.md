@@ -137,6 +137,17 @@ Below are a few snapshots of the current Makefile_advanced:
 - Ensure to start the services in the order specified in the [EdgeX Foundry documentation](https://docs.edgexfoundry.org/3.1/getting-started/native/Ch-BuildRunOnLinuxDistro/#run-edgex).
 - The kill commands use `SIGTERM` `(signal 15)` to stop the services gracefully. However, after stopping the service, the Consul UI will not indicate if the service is reachable or not.
 - You can also use `SIGKILL` `(signal 9)`, which will forcefully stop the service and the Consul UI will indicate if a service is reachable or not.
+- Create the below file in the specified directoty for clangd lsp to fetch information regarding the file.
+```bash
+:~/edgex-foundry/device-sdk-c$ cat /opt/iotech/iot/1.5/include/iot/.clangd
+CompileFlags:
+  Add: [-I$CSDK_DIR/include, -L$CSDK_DIR/lib]
+
+~/edgex-foundry/device-sdk-c$ cat compile_flags.txt
+-I/opt/iotech/iot/1.5/include
+-I/home/mpunix/edgex-foundry/device-sdk-c/include
+-L/opt/iotech/iot/1.5/lib
+```
 
 This is WIP readme, will be updated over time.
 
